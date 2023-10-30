@@ -3,11 +3,11 @@ import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
 plugins {
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
-//    alias(libs.plugins.kotlin.parcelize)
-    id("kotlin-parcelize")
-//    alias(libs.plugins.kotlin.kapt)
-    id("kotlin-kapt")
-    alias(libs.plugins.dagger.hilt.android)
+//    id("kotlin-parcelize")
+    id("kotlinx-serialization")
+//    id("kotlin-kapt")
+    alias(libs.plugins.ksp)
+//    alias(libs.plugins.dagger.hilt.android)
     alias(libs.plugins.gms.google.services)
 }
 
@@ -61,6 +61,8 @@ dependencies {
     implementation(project(":data"))
     implementation(project(":domain"))
     implementation(libs.bundles.common)
+    implementation(libs.androidx.core.splashscreen)
+//    implementation(libs.kotlinx.serialization.json)
     testImplementation(libs.junit)
     androidTestImplementation(libs.bundles.testing)
 
@@ -73,17 +75,19 @@ dependencies {
 
     implementation(libs.accompanist.systemuicontroller)
 
-    implementation(libs.bundles.hilt)
-    kapt(libs.hilt.android.compiler)
+//    implementation(libs.bundles.hilt)
+//    kapt(libs.hilt.android.compiler)
+    implementation(libs.bundles.koin)
+    testImplementation(libs.koin.test)
 
     implementation(libs.bundles.paging)
 
-    implementation(libs.coil)
+    implementation(libs.bundles.coil)
 
     implementation(libs.gson)
 
     implementation(libs.bundles.room)
-    kapt(libs.room.compiler)
+    ksp(libs.room.compiler)
 
     implementation(platform(libs.firebase.bom))
 }

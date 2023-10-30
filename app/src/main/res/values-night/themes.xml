@@ -1,0 +1,39 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.CartWave" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!--        Primary brand color.-->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorOnPrimary">@color/onPrimary</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorOnSecondary">@color/onSecondary</item>
+        <!-- Status bar color. -->
+        <!--        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>-->
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="LauncherTheme" parent="Theme.CartWave">
+<!--        <item name="android:windowFullscreen">true</item>-->
+<!--        <item name="android:windowActionBar">false</item>-->
+<!--        <item name="android:windowNoTitle">true</item>-->
+        <item name="android:windowBackground">@drawable/splash_background</item>
+        <item name="android:opacity">opaque</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="android:statusBarColor">@color/background</item>
+        <item name="android:navigationBarColor">@color/background</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowTranslucentStatus">false</item>
+        <!--        <item name="android:navigationBarColor">@android:color/transparent</item>-->
+        <!--        <item name="android:statusBarColor">@android:color/transparent</item>-->
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="postSplashScreenTheme">@style/Theme.CartWave</item>
+    </style>
+
+    <style name="Theme.App.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo</item>
+        <item name="postSplashScreenTheme">@style/LauncherTheme</item>
+        <item name="windowSplashScreenAnimationDuration">1500</item>
+    </style>
+</resources>
