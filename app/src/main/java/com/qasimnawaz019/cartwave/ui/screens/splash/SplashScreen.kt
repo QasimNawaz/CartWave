@@ -111,9 +111,6 @@ fun SplashScreen(
         val logoSize = 192.dp
         val nameSize = 300.dp
         val maxHeight = maxHeight
-        val maxWidth = maxWidth
-//        val totalXAxis = (lines.sortedWith(compareBy { it.start.x })
-//            .last().start.x - lines.sortedWith(compareBy { it.start.x }).first().start.x)
         val logoOffset = animateIntOffsetAsState(targetValue = if (onTop) IntOffset(
             0,
             with(LocalDensity.current) {
@@ -124,7 +121,6 @@ fun SplashScreen(
             Log.d("SplashScreen", "finishedListener")
             coroutineScope.launch {
                 progress.animateTo(1f, animationSpec = tween(3000), block = {
-//                                Log.d("SplashScreen", "animateTo: ${this.value}")
                     if (this.value == 1f) {
                         viewModel.isUserLoggedIn()
                     }

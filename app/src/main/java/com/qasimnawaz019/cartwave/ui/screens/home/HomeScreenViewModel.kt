@@ -16,9 +16,9 @@ class HomeScreenViewModel(
     private val removeFavouriteDatabaseUseCase: RemoveFavouriteDatabaseUseCase
 ) : BaseViewModel<List<Product>>() {
 
-//    init {
-//        getProducts(10)
-//    }
+    init {
+        getProducts(10)
+    }
 
     fun getProducts(limit: Int) {
         viewModelScope.launch {
