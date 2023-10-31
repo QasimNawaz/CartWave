@@ -6,11 +6,12 @@ import com.qasimnawaz019.domain.utils.NetworkUiState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 open class BaseViewModel<T> : ViewModel() {
 
     internal val _networkUiState = MutableStateFlow<NetworkUiState<T>>(NetworkUiState.Empty)
-    val networkUiState: StateFlow<NetworkUiState<T>> = _networkUiState
+    val networkUiState: StateFlow<NetworkUiState<T>> = _networkUiState.asStateFlow()
 
     suspend fun Flow<ApiResponse<T>>.asUiState() {
         this.collect {

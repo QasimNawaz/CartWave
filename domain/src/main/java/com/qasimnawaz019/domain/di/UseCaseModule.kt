@@ -10,7 +10,7 @@ import org.koin.dsl.module
 val useCaseModule = module {
     single { LoginUseCase(get(), get()) }
     single { CategoriesUseCase(get(), get()) }
-    single { ProductsUseCase(get()) }
+    single { ProductsUseCase(get(), get()) }
     single { AddToFavouriteDatabaseUseCase(get()) }
     single { RemoveFavouriteDatabaseUseCase(get()) }
 }

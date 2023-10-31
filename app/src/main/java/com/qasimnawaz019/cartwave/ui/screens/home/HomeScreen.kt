@@ -6,6 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,7 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
@@ -26,7 +27,9 @@ import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,46 +38,80 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
-import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.qasimnawaz019.cartwave.R
 import com.qasimnawaz019.cartwave.ui.components.CartWaveSurface
 import com.qasimnawaz019.cartwave.ui.components.ProductShimmer
 import com.qasimnawaz019.domain.model.Product
-import okhttp3.internal.notify
-import org.koin.androidx.compose.koinViewModel
+import com.qasimnawaz019.domain.utils.NetworkUiState
+import org.koin.androidx.compose.getViewModel
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun HomeScreen(viewModel: HomeScreenViewModel = koinViewModel()) {
-
-    val productPagingItems: LazyPagingItems<Product> =
-        viewModel.getProducts().collectAsLazyPagingItems()
+fun HomeScreen(viewModel: HomeScreenViewModel = getViewModel()) {
 
     val lazyListState = rememberLazyListState()
-
+    val products = remember {
+        mutableStateMapOf<Int, Product>()
+    }
+    val loading = remember {
+        mutableStateOf(false)
+    }
+    val error = remember {
+        mutableStateOf("")
+    }
     val nestedScrollConnection = remember {
         object : NestedScrollConnection {
-            override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
-                // On scroll ended detection
-                Log.d("NestedScroll", "scroll completed")
+            override suspend fun onPostFling(
+                consumed: Velocity,
+                available: Velocity
+            ): Velocity {
+                if (!lazyListState.canScrollForward) {
+                    viewModel.getProducts(products.size + 10)
+                }
                 return super.onPostFling(consumed, available)
             }
         }
     }
 
+    val productsResponse: NetworkUiState<List<Product>> by viewModel.networkUiState.collectAsStateWithLifecycle()
+    when (productsResponse) {
+        is NetworkUiState.Loading -> {
+            loading.value = true
+        }
+
+        is NetworkUiState.Error -> {
+            loading.value = false
+            (productsResponse as NetworkUiState.Error).error.let {
+                error.value = it
+            }
+        }
+
+        is NetworkUiState.Success -> {
+            loading.value = false
+            (productsResponse as NetworkUiState.Success<List<Product>>).data.let {
+                products.putAll(it.associateBy { it.id!! })
+                Log.d("HomeScren", "Success")
+            }
+        }
+
+        else -> {}
+    }
+
     Scaffold(
-        backgroundColor = MaterialTheme.colorScheme.background, modifier = Modifier.fillMaxSize()
+        backgroundColor = MaterialTheme.colorScheme.background,
+        modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
         Column(Modifier.padding(innerPadding)) {
             Row(
@@ -116,137 +153,30 @@ fun HomeScreen(viewModel: HomeScreenViewModel = koinViewModel()) {
             }
             LazyColumn(
                 modifier = Modifier.nestedScroll(nestedScrollConnection),
+                state = lazyListState
             ) {
                 item {
                     ImageSlider()
                 }
-                val cols = 2
-                items(productPagingItems.itemSnapshotList.chunked(cols)) { products ->
-                    Row {
-                        for ((index, product) in products.withIndex()) {
-                            Box(modifier = Modifier.fillMaxWidth(1f / (cols - index))) {
-                                product?.let {
-                                    ProductItem(product = it, onUpdateFavourite = {
-                                        Log.d(
-                                            "NestedScroll",
-                                            "${product.id}: ${product.isFavourite}"
-                                        )
-                                        if (it.isFavourite) {
-                                            it.id?.let { id -> viewModel.removeFavourite(id) }
-                                        } else {
-                                            viewModel.addToFavourite(it)
-                                        }
-                                        productPagingItems[index]?.isFavourite =
-                                            it.isFavourite.not()
-//                                        productPagingItems.refresh()
-                                    })
-                                }
+                item {
+                    val itemSize: Dp = (LocalConfiguration.current.screenWidthDp.dp / 2) - 12.dp
+                    FlowRow(maxItemsInEachRow = 2) {
+                        products.forEach {
+                            ProductItem(product = it.value, width = itemSize) {
+                                products.set(
+                                    it.key,
+                                    it.value.copy(isFavourite = it.value.isFavourite.not())
+                                )
+                                viewModel.updateFavouriteStatus(it.value, products.values.toList())
                             }
                         }
                     }
                 }
-                when (productPagingItems.loadState.refresh) { //FIRST LOAD
-                    is LoadState.Error -> {
-                        //state.error to get error message
+                item {
+                    if (loading.value) {
+                        ProductShimmer()
                     }
-
-                    is LoadState.Loading -> { // Loading UI
-                        item {
-                            ProductShimmer()
-                        }
-                    }
-
-                    else -> {}
                 }
-                when (val state = productPagingItems.loadState.append) { // Pagination
-                    is LoadState.Error -> {
-                        //TODO Pagination Error Item
-                        //state.error to get error message
-                    }
-
-                    is LoadState.Loading -> { // Pagination Loading UI
-                        item {
-                            ProductShimmer()
-                        }
-                    }
-
-                    else -> {}
-                }
-
-//                item {
-//                    val itemSize: Dp = (LocalConfiguration.current.screenWidthDp.dp / 2) - 12.dp
-//                    FlowRow(maxItemsInEachRow = 2) {
-//                        productPagingItems.itemSnapshotList.forEach { product ->
-//                            CartWaveSurface(
-//                                color = MaterialTheme.colorScheme.surface,
-//                                modifier = Modifier
-//                                    .padding(5.dp)
-//                                    .width(itemSize)
-//                                    .height(230.dp),
-//                                elevation = 2.dp,
-//                                shape = RoundedCornerShape(6.dp)
-//                            ) {
-//                                Column(modifier = Modifier.fillMaxSize()) {
-//                                    Box(
-//                                        modifier = Modifier
-//                                            .fillMaxWidth()
-//                                            .weight(7f),
-//                                        contentAlignment = Alignment.TopEnd
-//                                    ) {
-//                                        AsyncImage(
-//                                            model = ImageRequest.Builder(LocalContext.current)
-//                                                .data(product?.image).build(),
-//                                            modifier = Modifier.fillMaxSize(),
-//                                            contentScale = ContentScale.Inside,
-//                                            contentDescription = "item image",
-//                                        )
-//                                    }
-//                                    Column(
-//                                        modifier = Modifier
-//                                            .fillMaxWidth()
-//                                            .padding(horizontal = 6.dp)
-//                                            .weight(3f)
-//                                    ) {
-//                                        Text(
-//                                            text = product?.title ?: "",
-//                                            overflow = TextOverflow.Ellipsis,
-//                                            maxLines = 2,
-//                                            fontWeight = FontWeight.Bold,
-//                                            fontSize = MaterialTheme.typography.titleMedium.fontSize
-//                                        )
-//                                        Spacer(modifier = Modifier.height(3.dp))
-//                                        Row {
-//                                            Text(
-//                                                modifier = Modifier
-//                                                    .weight(7f),
-//                                                text = "$ ${product?.price}",
-//                                                fontWeight = FontWeight.Bold
-//                                            )
-//                                            Row(
-//                                                modifier = Modifier
-//                                                    .weight(3f),
-//                                                verticalAlignment = Alignment.CenterVertically,
-//                                                horizontalArrangement = Arrangement.End
-//                                            ) {
-//                                                Icon(
-//                                                    painter = painterResource(id = R.drawable.ic_yellow_star),
-//                                                    modifier = Modifier
-//                                                        .size(15.dp),
-//                                                    contentDescription = null,
-//                                                    tint = Color.Unspecified
-//                                                )
-//                                                Spacer(modifier = Modifier.width(2.dp))
-//                                                Text(
-//                                                    text = "${product?.rating?.rate}",
-//                                                )
-//                                            }
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
             }
         }
 
@@ -255,12 +185,12 @@ fun HomeScreen(viewModel: HomeScreenViewModel = koinViewModel()) {
 
 
 @Composable
-fun ProductItem(product: Product, onUpdateFavourite: () -> Unit) {
+fun ProductItem(product: Product, width: Dp, onUpdateFavourite: () -> Unit) {
     CartWaveSurface(
         color = MaterialTheme.colorScheme.surface,
         modifier = Modifier
             .padding(5.dp)
-            .fillMaxWidth()
+            .width(width)
             .height(230.dp)
             .clip(shape = MaterialTheme.shapes.medium),
         elevation = 2.dp,
@@ -270,10 +200,12 @@ fun ProductItem(product: Product, onUpdateFavourite: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(7f)
-                    .clip(shape = MaterialTheme.shapes.medium), contentAlignment = Alignment.TopEnd
+                    .clip(shape = MaterialTheme.shapes.medium),
+                contentAlignment = Alignment.TopEnd
             ) {
                 AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current).data(product.image).build(),
+                    model = ImageRequest.Builder(LocalContext.current).data(product.image)
+                        .build(),
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop,
                     contentDescription = null,
@@ -285,7 +217,9 @@ fun ProductItem(product: Product, onUpdateFavourite: () -> Unit) {
                             .size(30.dp)
                             .background(Color.DarkGray, shape = CircleShape)
                             .padding(6.dp)
-                            .clickable { onUpdateFavourite.invoke() },
+                            .clickable {
+                                onUpdateFavourite.invoke()
+                            },
                         painter = painterResource(id = R.drawable.ic_heart_filled),
                         contentDescription = null,
                         tint = Color.Red,
@@ -297,7 +231,9 @@ fun ProductItem(product: Product, onUpdateFavourite: () -> Unit) {
                             .size(30.dp)
                             .background(Color.DarkGray, shape = CircleShape)
                             .padding(6.dp)
-                            .clickable { onUpdateFavourite.invoke() },
+                            .clickable {
+                                onUpdateFavourite.invoke()
+                            },
                         painter = painterResource(id = R.drawable.ic_heart),
                         contentDescription = null,
                     )
