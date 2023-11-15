@@ -6,18 +6,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import com.qasimnawaz019.cartwave.ui.components.BottomBarScreenInfo
 import com.qasimnawaz019.cartwave.ui.screens.cart.CartScreen
 import com.qasimnawaz019.cartwave.ui.screens.home.HomeScreen
 import com.qasimnawaz019.cartwave.ui.screens.profile.ProfileScreen
 import com.qasimnawaz019.cartwave.ui.screens.wishlist.WishlistScreen
+import com.qasimnawaz019.cartwave.utils.composableScaleTransition
+import com.qasimnawaz019.cartwave.utils.composableSlideTransition
 
 @Composable
 fun HomeNavigationGraph(
     navController: NavHostController,
     startDestination: String,
     innerPadding: PaddingValues,
+    onNavigate: (route: String) -> Unit,
 ) {
     NavHost(
         navController = navController,
@@ -26,19 +28,19 @@ fun HomeNavigationGraph(
         modifier = Modifier.padding(innerPadding)
     ) {
 
-        composable(route = BottomBarScreenInfo.Home.route) {
-            HomeScreen()
+        composableScaleTransition(route = BottomBarScreenInfo.Home.route) {
+            HomeScreen(onNavigate)
         }
 
-        composable(route = BottomBarScreenInfo.Wishlist.route) {
+        composableScaleTransition(route = BottomBarScreenInfo.Wishlist.route) {
             WishlistScreen()
         }
 
-        composable(route = BottomBarScreenInfo.Cart.route) {
+        composableScaleTransition(route = BottomBarScreenInfo.Cart.route) {
             CartScreen()
         }
 
-        composable(route = BottomBarScreenInfo.Profile.route) {
+        composableScaleTransition(route = BottomBarScreenInfo.Profile.route) {
             ProfileScreen()
         }
     }

@@ -1,6 +1,7 @@
 package com.qasimnawaz019.cartwave.ui.screens.auth
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -34,7 +35,11 @@ import com.qasimnawaz019.cartwave.ui.components.OtpView
 fun VerificationCodeScreen(navController: NavHostController) {
 
     var isNextBtnStatus by remember { mutableStateOf(value = false) }
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background)
+    ) {
         IconButton(
             modifier = Modifier.padding(start = 10.dp, top = 20.dp),
             onClick = { navController.popBackStack() }) {
@@ -102,7 +107,7 @@ fun VerificationCodeScreen(navController: NavHostController) {
                     navController.popBackStack()
                     navController.popBackStack()
                 }, colors = ButtonDefaults.buttonColors(
-                    contentColor = Color.White,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
                     backgroundColor = MaterialTheme.colorScheme.primary,
                     disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     disabledBackgroundColor = MaterialTheme.colorScheme.surfaceVariant

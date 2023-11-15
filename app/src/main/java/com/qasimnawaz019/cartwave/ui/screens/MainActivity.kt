@@ -29,6 +29,7 @@ class MainActivity : ComponentActivity() {
     private val viewModel: MainActivityViewModel by viewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+//        WindowCompat.setDecorFitsSystemWindows(window, true)
         installSplashScreen()
         setContent {
             MaterialTheme {

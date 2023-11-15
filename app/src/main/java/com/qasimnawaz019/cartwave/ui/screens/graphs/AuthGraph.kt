@@ -1,13 +1,16 @@
 package com.qasimnawaz019.cartwave.ui.screens.graphs
 
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.qasimnawaz019.cartwave.ui.screens.auth.ForgotPasswordScreen
-import com.qasimnawaz019.cartwave.ui.screens.auth.login.LoginScreen
 import com.qasimnawaz019.cartwave.ui.screens.auth.SignUpScreen
 import com.qasimnawaz019.cartwave.ui.screens.auth.VerificationCodeScreen
+import com.qasimnawaz019.cartwave.ui.screens.auth.login.LoginScreen
+import com.qasimnawaz019.cartwave.ui.screens.auth.login.LoginScreenViewModel
+import com.qasimnawaz019.cartwave.utils.composableSlideTransition
+import org.koin.androidx.compose.getViewModel
 
 fun NavGraphBuilder.authNavigationGraph(
     navController: NavHostController
@@ -15,16 +18,16 @@ fun NavGraphBuilder.authNavigationGraph(
     navigation(
         route = Graph.AUTH_GRAPH, startDestination = AuthScreenInfo.Login.route
     ) {
-        composable(route = AuthScreenInfo.Login.route) {
+        composableSlideTransition(route = AuthScreenInfo.Login.route) {
             LoginScreen(navController)
         }
-        composable(route = AuthScreenInfo.SignUp.route) {
+        composableSlideTransition(route = AuthScreenInfo.SignUp.route) {
             SignUpScreen(navController)
         }
-        composable(route = AuthScreenInfo.VerificationCode.route) {
+        composableSlideTransition(route = AuthScreenInfo.VerificationCode.route) {
             VerificationCodeScreen(navController)
         }
-        composable(route = AuthScreenInfo.ForgotPassword.route) {
+        composableSlideTransition(route = AuthScreenInfo.ForgotPassword.route) {
             ForgotPasswordScreen(navController)
         }
     }

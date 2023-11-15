@@ -1,6 +1,10 @@
 package com.qasimnawaz019.cartwave.ui.screens.splash
 
+import android.app.Activity
+import android.graphics.Rect
 import android.util.Log
+import android.view.View
+import android.view.Window
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateIntOffsetAsState
 import androidx.compose.animation.core.spring
@@ -10,12 +14,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,6 +36,7 @@ import androidx.compose.ui.graphics.asAndroidPath
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.vector.PathParser
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -49,12 +51,20 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 import kotlin.math.floor
 
+
 @Composable
 fun SplashScreen(
     navController: NavHostController,
     startDestination: String,
     viewModel: SplashScreenViewModel = getViewModel()
 ) {
+//    val window = (LocalView.current.context as Activity).window
+//    val rectangle = Rect()
+//    window.decorView.getWindowVisibleDisplayFrame(rectangle)
+//    val statusBarHeight = rectangle.top
+//    Log.d("SplashScreen", "statusBarHeight: $statusBarHeight")
+
+
     val loginState: Int by viewModel.userLoggedInState.collectAsStateWithLifecycle()
 
     if (loginState == 1) {
@@ -110,6 +120,8 @@ fun SplashScreen(
     ) {
         val logoSize = 192.dp
         val nameSize = 300.dp
+        Log.d("SplashScreen", "maxHeight: $maxHeight")
+//        val maxHeight = (maxHeight.value - rectangle.top / 3).dp
         val maxHeight = maxHeight
         val logoOffset = animateIntOffsetAsState(targetValue = if (onTop) IntOffset(
             0,

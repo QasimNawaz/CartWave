@@ -35,7 +35,11 @@ fun ForgotPasswordScreen(navController: NavHostController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isChecked by remember { mutableStateOf(value = false) }
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background)
+    ) {
         IconButton(
             modifier = Modifier.padding(start = 10.dp, top = 20.dp),
             onClick = { navController.popBackStack() }) {

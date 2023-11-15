@@ -7,4 +7,5 @@ val daosKoinModule = module {
     includes(databaseKoinModule)
 
     single { get<CartWaveDatabase>().favouriteProductsDao() }
+    single { get<CartWaveDatabase>().myCartDao() }
 }

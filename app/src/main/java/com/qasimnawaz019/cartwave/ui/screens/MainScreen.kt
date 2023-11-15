@@ -11,13 +11,15 @@ import com.qasimnawaz019.cartwave.ui.screens.graphs.HomeNavigationGraph
 
 @Composable
 fun MainScreen(
-    navController: NavHostController = rememberNavController()
+    onNavigate: (route: String) -> Unit,
+    navController: NavHostController = rememberNavController(),
 ) {
     CartWaveScaffold(bottomBar = { BottomBar(navController = navController) }) { innerPadding ->
         HomeNavigationGraph(
             navController = navController,
             startDestination = BottomBarScreenInfo.Home.route,
-            innerPadding = innerPadding
+            innerPadding = innerPadding,
+            onNavigate = onNavigate
         )
     }
 }
@@ -25,5 +27,5 @@ fun MainScreen(
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {
-    MainScreen()
+    MainScreen({})
 }

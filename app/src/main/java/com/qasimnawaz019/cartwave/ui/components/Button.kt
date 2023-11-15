@@ -32,7 +32,7 @@ fun SocialButton(
         onClick = { onClick.invoke() },
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = MaterialTheme.colorScheme.surface,
+            backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
         ),
     ) {
         Box(

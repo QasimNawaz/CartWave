@@ -48,4 +48,12 @@ class RemoteDataSourceImpl(
         }
     }
 
+    override suspend fun getProductDetail(productId: Int): ApiResponse<Product> {
+        return client.safeRequest(networkConnectivity) {
+            method = HttpMethod.Get
+            url("$PRODUCTS/$productId")
+            contentType(ContentType.Application.Json)
+        }
+    }
+
 }

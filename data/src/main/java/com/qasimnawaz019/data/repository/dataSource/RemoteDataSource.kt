@@ -12,4 +12,6 @@ interface RemoteDataSource {
     suspend fun getCategories(): ApiResponse<List<String>>
 
     suspend fun getProducts(limit: Int): ApiResponse<List<Product>>
+
+    suspend fun getProductDetail(productId: Int): ApiResponse<Product>
 }

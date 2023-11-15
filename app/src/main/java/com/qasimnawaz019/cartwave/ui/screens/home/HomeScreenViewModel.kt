@@ -51,6 +51,7 @@ class HomeScreenViewModel(
                     _networkUiState
                 }
             } else {
+                Log.d("ProductDetailScr", "addToFavourite: $product")
                 addToFavouriteDatabaseUseCase.execute(AddToFavouriteDatabaseUseCase.Params(product))
             }
         }

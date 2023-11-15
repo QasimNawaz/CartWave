@@ -27,6 +27,7 @@ import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -43,7 +44,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
@@ -52,21 +52,24 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.qasimnawaz019.cartwave.R
 import com.qasimnawaz019.cartwave.ui.components.CartWaveSurface
-import com.qasimnawaz019.cartwave.ui.components.ProductShimmer
+import com.qasimnawaz019.cartwave.ui.components.VerticalGridProductsShimmer
+import com.qasimnawaz019.cartwave.ui.screens.graphs.MainScreenInfo
 import com.qasimnawaz019.domain.model.Product
 import com.qasimnawaz019.domain.utils.NetworkUiState
 import org.koin.androidx.compose.getViewModel
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun HomeScreen(viewModel: HomeScreenViewModel = getViewModel()) {
-
+fun HomeScreen(
+    onNavigate: (route: String) -> Unit,
+    viewModel: HomeScreenViewModel = getViewModel()
+) {
     val lazyListState = rememberLazyListState()
     val products = remember {
         mutableStateMapOf<Int, Product>()
     }
     val loading = remember {
-        mutableStateOf(false)
+        mutableStateOf(true)
     }
     val error = remember {
         mutableStateOf("")
@@ -77,7 +80,7 @@ fun HomeScreen(viewModel: HomeScreenViewModel = getViewModel()) {
                 consumed: Velocity,
                 available: Velocity
             ): Velocity {
-                if (!lazyListState.canScrollForward) {
+                if (!lazyListState.canScrollForward && (products.size + 10) <= 20) {
                     viewModel.getProducts(products.size + 10)
                 }
                 return super.onPostFling(consumed, available)
@@ -86,27 +89,29 @@ fun HomeScreen(viewModel: HomeScreenViewModel = getViewModel()) {
     }
 
     val productsResponse: NetworkUiState<List<Product>> by viewModel.networkUiState.collectAsStateWithLifecycle()
-    when (productsResponse) {
-        is NetworkUiState.Loading -> {
-            loading.value = true
-        }
-
-        is NetworkUiState.Error -> {
-            loading.value = false
-            (productsResponse as NetworkUiState.Error).error.let {
-                error.value = it
+    LaunchedEffect(productsResponse) {
+        when (productsResponse) {
+            is NetworkUiState.Loading -> {
+                loading.value = true
             }
-        }
 
-        is NetworkUiState.Success -> {
-            loading.value = false
-            (productsResponse as NetworkUiState.Success<List<Product>>).data.let {
-                products.putAll(it.associateBy { it.id!! })
-                Log.d("HomeScren", "Success")
+            is NetworkUiState.Error -> {
+                loading.value = false
+                (productsResponse as NetworkUiState.Error).error.let {
+                    error.value = it
+                }
             }
-        }
 
-        else -> {}
+            is NetworkUiState.Success -> {
+                loading.value = false
+                (productsResponse as NetworkUiState.Success<List<Product>>).data.let {
+                    products.putAll(it.associateBy { it.id!! })
+                    Log.d("HomeScren", "Success")
+                }
+            }
+
+            else -> {}
+        }
     }
 
     Scaffold(
@@ -162,19 +167,21 @@ fun HomeScreen(viewModel: HomeScreenViewModel = getViewModel()) {
                     val itemSize: Dp = (LocalConfiguration.current.screenWidthDp.dp / 2) - 12.dp
                     FlowRow(maxItemsInEachRow = 2) {
                         products.forEach {
-                            ProductItem(product = it.value, width = itemSize) {
+                            ProductItem(product = it.value, width = itemSize, {
                                 products.set(
                                     it.key,
                                     it.value.copy(isFavourite = it.value.isFavourite.not())
                                 )
                                 viewModel.updateFavouriteStatus(it.value, products.values.toList())
-                            }
+                            }, {
+                                onNavigate.invoke("${MainScreenInfo.ProductDetail.route}/${it.key}")
+                            })
                         }
                     }
                 }
                 item {
                     if (loading.value) {
-                        ProductShimmer()
+                        VerticalGridProductsShimmer()
                     }
                 }
             }
@@ -185,17 +192,29 @@ fun HomeScreen(viewModel: HomeScreenViewModel = getViewModel()) {
 
 
 @Composable
-fun ProductItem(product: Product, width: Dp, onUpdateFavourite: () -> Unit) {
+fun ProductItem(
+    product: Product,
+    width: Dp,
+    onUpdateFavourite: () -> Unit,
+    onDetailNav: () -> Unit
+) {
     CartWaveSurface(
-        color = MaterialTheme.colorScheme.surface,
+        color = MaterialTheme.colorScheme.surfaceVariant,
         modifier = Modifier
             .padding(5.dp)
             .width(width)
             .height(230.dp)
-            .clip(shape = MaterialTheme.shapes.medium),
+            .clip(shape = MaterialTheme.shapes.medium)
+            .clickable {
+                Log.d("HomeScren", "onDetailNav.invoke()")
+                onDetailNav.invoke()
+            },
         elevation = 2.dp,
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -236,6 +255,7 @@ fun ProductItem(product: Product, width: Dp, onUpdateFavourite: () -> Unit) {
                             },
                         painter = painterResource(id = R.drawable.ic_heart),
                         contentDescription = null,
+                        tint = Color.Red
                     )
                 }
             }
@@ -251,14 +271,16 @@ fun ProductItem(product: Product, width: Dp, onUpdateFavourite: () -> Unit) {
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 2,
                     fontWeight = FontWeight.Bold,
-                    fontSize = MaterialTheme.typography.titleMedium.fontSize
+                    fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                    color = MaterialTheme.colorScheme.onBackground
                 )
                 Spacer(modifier = Modifier.height(3.dp))
                 Row {
                     Text(
                         modifier = Modifier.weight(7f),
                         text = "$ ${product.price}",
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                     Row(
                         modifier = Modifier.weight(3f),
@@ -274,16 +296,11 @@ fun ProductItem(product: Product, width: Dp, onUpdateFavourite: () -> Unit) {
                         Spacer(modifier = Modifier.width(2.dp))
                         Text(
                             text = "${product.rating?.rate}",
+                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
                         )
                     }
                 }
             }
         }
     }
-}
-
-@Composable
-@Preview
-fun ProfileScreenPreview() {
-    HomeScreen()
 }

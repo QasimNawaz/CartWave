@@ -4,26 +4,28 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Product(
-    val image: String? = null,
+    var image: String? = null,
 
-    val price: Double? = null,
+    var price: Double? = null,
 
-    val rating: Rating? = null,
+    var rating: Rating? = null,
 
-    val description: String? = null,
+    var description: String? = null,
 
-    val id: Int? = null,
+    var id: Int? = null,
 
-    val title: String? = null,
+    var title: String? = null,
 
-    val category: String? = null,
+    var category: String? = null,
 
-    var isFavourite: Boolean = false
+    var isFavourite: Boolean = false,
+
+    var cartQty: Int = 0
 )
 
 @Serializable
 data class Rating(
-    val rate: Double? = null,
+    var rate: Double? = null,
 
-    val count: Int? = null
+    var count: Int? = null
 )

@@ -9,4 +9,10 @@ interface LocalDataSource {
 
     suspend fun removeFavouriteById(id: Int)
 
+    suspend fun getMyCarts(): List<Product>
+
+    suspend fun addToCart(product: Product)
+
+    suspend fun removeCartById(id: Int)
+
 }

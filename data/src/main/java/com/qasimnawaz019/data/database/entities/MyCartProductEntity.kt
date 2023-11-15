@@ -5,12 +5,11 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.qasimnawaz019.data.database.converter.RatingTypeConverter
-import com.qasimnawaz019.data.utils.FAVOURITE_PRODUCT_TABLE
+import com.qasimnawaz019.data.utils.MY_CART_TABLE
 import kotlinx.serialization.Serializable
-
-@Entity(tableName = FAVOURITE_PRODUCT_TABLE)
+@Entity(tableName = MY_CART_TABLE)
 @Serializable
-data class FavouriteProductEntity(
+data class MyCartProductEntity(
 
     @ColumnInfo("image")
     val image: String? = null,
@@ -35,6 +34,6 @@ data class FavouriteProductEntity(
     @ColumnInfo("category")
     val category: String? = null,
 
-    @ColumnInfo("isFavourite")
-    val isFavourite: Boolean = false
+    @ColumnInfo("cartQty")
+    val cartQty: Int = 0
 )

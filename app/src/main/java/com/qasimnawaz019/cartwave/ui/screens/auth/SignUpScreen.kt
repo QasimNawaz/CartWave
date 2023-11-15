@@ -44,6 +44,7 @@ fun SignUpScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background)
             .padding(30.dp),
     ) {
         Spacer(modifier = Modifier.size(20.dp))
@@ -101,7 +102,10 @@ fun SignUpScreen(navController: NavHostController) {
 //                navController.navigate(Graph.MAIN)
             },
             colors = ButtonDefaults.buttonColors(
-                contentColor = Color.White, backgroundColor = MaterialTheme.colorScheme.primary
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                backgroundColor = MaterialTheme.colorScheme.primary,
+                disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                disabledBackgroundColor = MaterialTheme.colorScheme.surfaceVariant
             )
         ) {
             Text(text = "Signup")

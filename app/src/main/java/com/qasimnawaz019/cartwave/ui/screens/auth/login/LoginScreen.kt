@@ -187,7 +187,7 @@ fun LoginScreen(
                 )
             },
             colors = ButtonDefaults.buttonColors(
-                contentColor = Color.White,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
                 backgroundColor = MaterialTheme.colorScheme.primary,
                 disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 disabledBackgroundColor = MaterialTheme.colorScheme.surfaceVariant

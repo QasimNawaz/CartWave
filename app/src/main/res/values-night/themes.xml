@@ -18,15 +18,15 @@
         <!--        <item name="android:windowNoTitle">true</item>-->
         <item name="android:windowBackground">@drawable/splash_background</item>
         <item name="android:opacity">opaque</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:fitsSystemWindows">false</item>
-        <item name="android:statusBarColor">@color/background</item>
-        <item name="android:navigationBarColor">@color/background</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">false</item>
+        <item name="android:fitsSystemWindows">true</item>
+<!--        <item name="android:statusBarColor">@color/background</item>-->
+<!--        <item name="android:navigationBarColor">@color/background</item>-->
+<!--        <item name="android:windowContentOverlay">@null</item>-->
+<!--        <item name="android:windowTranslucentStatus">true</item>-->
         <!--        <item name="android:navigationBarColor">@android:color/transparent</item>-->
         <!--        <item name="android:statusBarColor">@android:color/transparent</item>-->
-        <item name="android:windowTranslucentNavigation">true</item>
+<!--        <item name="android:windowTranslucentNavigation">false</item>-->
     </style>
 
     <style name="Theme.App.Splash" parent="Theme.SplashScreen">

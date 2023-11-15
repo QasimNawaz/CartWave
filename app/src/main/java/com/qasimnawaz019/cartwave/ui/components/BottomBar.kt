@@ -35,6 +35,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.qasimnawaz019.cartwave.R
+import com.qasimnawaz019.cartwave.ui.screens.graphs.MainScreenInfo
 
 @Composable
 fun BottomBar(
