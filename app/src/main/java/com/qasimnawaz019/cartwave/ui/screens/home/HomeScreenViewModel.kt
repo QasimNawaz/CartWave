@@ -30,6 +30,7 @@ class HomeScreenViewModel(
 
     fun addToFavourite(product: Product) {
         viewModelScope.launch {
+            Log.d("HomeScren", "addToFavourite: $product")
             addToFavouriteDatabaseUseCase.execute(AddToFavouriteDatabaseUseCase.Params(product))
         }
     }
