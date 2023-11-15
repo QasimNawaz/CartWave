@@ -47,8 +47,8 @@ class ProductsRepoImpl(
                 is ApiResponse.Success -> {
                     Log.d("ProductDetailScr", "cacheFavouriteProduct: $cacheFavouriteProduct")
                     Log.d("ProductDetailScr", "cacheCartProduct: $cacheCartProduct")
-                    cacheFavouriteProduct?.let {
-                        remoteProduct.body.isFavourite = it.isFavourite
+                    if (cacheFavouriteProduct != null) {
+                        remoteProduct.body.isFavourite = true
                     }
                     cacheCartProduct?.let {
                         remoteProduct.body.cartQty = it.cartQty

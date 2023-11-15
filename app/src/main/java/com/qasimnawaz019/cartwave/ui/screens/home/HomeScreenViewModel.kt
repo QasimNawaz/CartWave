@@ -40,21 +40,4 @@ class HomeScreenViewModel(
             removeFavouriteDatabaseUseCase.execute(RemoveFavouriteDatabaseUseCase.Params(id))
         }
     }
-
-    fun updateFavouriteStatus(product: Product, values: List<Product>) {
-        viewModelScope.launch {
-            _networkUiState.emit(NetworkUiState.Success(values))
-            if (product.isFavourite) {
-                product.id?.let {
-                    removeFavouriteDatabaseUseCase.execute(
-                        RemoveFavouriteDatabaseUseCase.Params(it)
-                    )
-                    _networkUiState
-                }
-            } else {
-                Log.d("ProductDetailScr", "addToFavourite: $product")
-                addToFavouriteDatabaseUseCase.execute(AddToFavouriteDatabaseUseCase.Params(product))
-            }
-        }
-    }
 }
