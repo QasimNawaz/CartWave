@@ -1,6 +1,5 @@
 package com.qasimnawaz019.data.repository.repoImpl
 
-import android.util.Log
 import com.qasimnawaz019.data.database.dao.FavouriteProductsDao
 import com.qasimnawaz019.data.database.dao.MyCartProductDao
 import com.qasimnawaz019.data.repository.dataSource.RemoteDataSource
@@ -21,14 +20,15 @@ class ProductsRepoImpl(
 
     override suspend fun getProducts(limit: Int): Flow<ApiResponse<List<Product>>> {
         return flow {
-            val remoteProducts = remoteData.getProducts(limit)
-            val cacheProducts = favouriteProductsDao.getFavouriteEntities().associateBy { it.id }
-            when (remoteProducts) {
+            when (val remoteProducts = remoteData.getProducts(limit)) {
                 is ApiResponse.Success -> {
-                    remoteProducts.body.onEach { product ->
-                        product.isFavourite = cacheProducts.containsKey(product.id)
+                    favouriteProductsDao.getFavouriteEntities().collect { collections ->
+                        val cacheProducts = collections.associateBy { it.id }
+                        remoteProducts.body.onEach { product ->
+                            product.isFavourite = cacheProducts.containsKey(product.id)
+                        }
+                        emit(remoteProducts)
                     }
-                    emit(remoteProducts)
                 }
 
                 else -> {
@@ -45,8 +45,6 @@ class ProductsRepoImpl(
             val cacheCartProduct = myCartProductDao.getCartById(productId)
             when (remoteProduct) {
                 is ApiResponse.Success -> {
-                    Log.d("ProductDetailScr", "cacheFavouriteProduct: $cacheFavouriteProduct")
-                    Log.d("ProductDetailScr", "cacheCartProduct: $cacheCartProduct")
                     if (cacheFavouriteProduct != null) {
                         remoteProduct.body.isFavourite = true
                     }

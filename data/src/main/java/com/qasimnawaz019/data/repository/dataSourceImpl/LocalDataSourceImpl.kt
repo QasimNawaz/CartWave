@@ -21,19 +21,21 @@ class LocalDataSourceImpl(
     private val myCartProductDao: MyCartProductDao,
     private val ioDispatcher: CoroutineDispatcher,
 ) : LocalDataSource {
-    override suspend fun getFavouriteProducts(): List<Product> {
-        return favouriteProductsDao.getFavouriteEntities().stream().map { entity ->
-            Product(
-                image = entity.image,
-                price = entity.price,
-                rating = entity?.rating?.let { Rating(it.rate, it.count) },
-                description = entity.description,
-                id = entity.id,
-                title = entity.title,
-                category = entity.category,
-                isFavourite = entity.isFavourite
-            )
-        }.collect(Collectors.toList())
+    override suspend fun getFavouriteProducts(): Flow<List<Product>> {
+        return favouriteProductsDao.getFavouriteEntities().map { favouriteEntities ->
+            favouriteEntities.map { entity ->
+                Product(
+                    image = entity.image,
+                    price = entity.price,
+                    rating = entity?.rating?.let { Rating(it.rate, it.count) },
+                    description = entity.description,
+                    id = entity.id,
+                    title = entity.title,
+                    category = entity.category,
+                    isFavourite = entity.isFavourite
+                )
+            }
+        }.flowOn(ioDispatcher)
     }
 
     override suspend fun addToFavouriteProduct(product: Product) {

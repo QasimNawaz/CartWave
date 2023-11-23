@@ -10,12 +10,9 @@ import kotlinx.coroutines.flow.flowOn
 
 class FavouriteProductsRepoImpl(
     private val localDataSource: LocalDataSource,
-    private val ioDispatcher: CoroutineDispatcher,
 ) : FavouriteProductsRepo {
     override suspend fun getFavouriteProducts(): Flow<List<Product>> {
-        return flow {
-            emit(localDataSource.getFavouriteProducts())
-        }.flowOn(ioDispatcher)
+        return localDataSource.getFavouriteProducts()
     }
 
     override suspend fun addToFavouriteProduct(product: Product) {

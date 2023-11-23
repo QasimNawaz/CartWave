@@ -4,7 +4,7 @@ import com.qasimnawaz019.domain.model.Product
 import kotlinx.coroutines.flow.Flow
 
 interface LocalDataSource {
-    suspend fun getFavouriteProducts(): List<Product>
+    suspend fun getFavouriteProducts(): Flow<List<Product>>
 
     suspend fun addToFavouriteProduct(product: Product)
 

@@ -22,6 +22,6 @@ val repositoryModule = module {
     single<AuthRepo> { AuthRepoImpl(get(), get()) }
     single<CategoriesRepo> { CategoriesRepoImpl(get(), get()) }
     single<ProductsRepo> { ProductsRepoImpl(get(), get(), get(), get()) }
-    single<FavouriteProductsRepo> { FavouriteProductsRepoImpl(get(), get()) }
+    single<FavouriteProductsRepo> { FavouriteProductsRepoImpl(get()) }
     single<MyCartRepo> { MyCartRepoImpl(get()) }
 }

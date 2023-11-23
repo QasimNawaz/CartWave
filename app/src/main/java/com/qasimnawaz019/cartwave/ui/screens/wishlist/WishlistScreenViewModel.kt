@@ -30,9 +30,8 @@ class WishlistScreenViewModel(
         }
     }
 
-    fun removeFavourite(id: Int, products: List<Product>) {
+    fun removeFavourite(id: Int) {
         viewModelScope.launch {
-            _favouriteProducts.emit(products)
             removeFavouriteDatabaseUseCase.execute(RemoveFavouriteDatabaseUseCase.Params(id))
         }
     }

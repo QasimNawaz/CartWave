@@ -14,6 +14,9 @@ import io.ktor.client.request.url
 import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
 
 class ProductsPagingSource(
     private val client: HttpClient,
@@ -45,10 +48,16 @@ class ProductsPagingSource(
                 is ApiResponse.Error.SerializationError -> LoadResult.Error(Throwable(response.message))
                 is ApiResponse.Success -> {
                     val remoteProducts = response.body
-                    val cacheProducts = productsDao.getFavouriteEntities().associateBy { it.id }
-                    remoteProducts.onEach { product ->
-                        product.isFavourite = cacheProducts.containsKey(product.id)
+                    productsDao.getFavouriteEntities().collect { collections ->
+                        val cacheProducts = collections.associateBy { it.id }
+                        remoteProducts.onEach { product ->
+                            product.isFavourite =
+                                cacheProducts.containsKey(product.id)
+                        }
                     }
+//                    remoteProducts.onEach { product ->
+//                        product.isFavourite = cacheProducts.containsKey(product.id)
+//                    }
                     LoadResult.Page(
                         data = remoteProducts,
                         prevKey = if (page == 1) null else page.minus(1),
