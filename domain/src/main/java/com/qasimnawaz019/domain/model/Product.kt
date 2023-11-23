@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class Product(
     var image: String? = null,
 
-    var price: Double? = null,
+    var price: Double = 0.0,
 
     var rating: Rating? = null,
 

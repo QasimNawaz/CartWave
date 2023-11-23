@@ -56,7 +56,7 @@ fun BottomBar(
         CartWaveSurface(
             color = MaterialTheme.colorScheme.surface,
             modifier = Modifier
-                .padding(top = 6.dp),
+                .padding(top = 1.dp),
 //                .border(
 //                    width = 1.dp,
 //                    color = MaterialTheme.colorScheme.primary,

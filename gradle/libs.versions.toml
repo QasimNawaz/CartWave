@@ -5,6 +5,7 @@ minSdk = "24"
 targetSdk = "34"
 
 androidxCoreSplashscreen = "1.0.1"
+compose-constraintlayout = "1.0.1"
 kotlin = "1.8.20"
 agp = "8.1.0"
 ksp = "1.8.21-1.0.11"
@@ -63,6 +64,7 @@ espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref =
 
 # Compose
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
+compose-constraintlayout = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "compose-constraintlayout" }
 compose-ui = { module = "androidx.compose.ui:ui" }
 comose-ui-util = { module = "androidx.compose.ui:ui-util" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
@@ -160,6 +162,7 @@ testing = [
     "espresso-core"
 ]
 compose-common-impl = [
+    "compose-constraintlayout",
     "compose-ui",
     "comose-ui-util",
     "compose-ui-tooling-preview",

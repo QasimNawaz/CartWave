@@ -12,7 +12,6 @@ import com.qasimnawaz019.cartwave.ui.screens.home.HomeScreen
 import com.qasimnawaz019.cartwave.ui.screens.profile.ProfileScreen
 import com.qasimnawaz019.cartwave.ui.screens.wishlist.WishlistScreen
 import com.qasimnawaz019.cartwave.utils.composableScaleTransition
-import com.qasimnawaz019.cartwave.utils.composableSlideTransition
 
 @Composable
 fun HomeNavigationGraph(
@@ -33,11 +32,11 @@ fun HomeNavigationGraph(
         }
 
         composableScaleTransition(route = BottomBarScreenInfo.Wishlist.route) {
-            WishlistScreen()
+            WishlistScreen(onNavigate)
         }
 
         composableScaleTransition(route = BottomBarScreenInfo.Cart.route) {
-            CartScreen()
+            CartScreen(onNavigate)
         }
 
         composableScaleTransition(route = BottomBarScreenInfo.Profile.route) {

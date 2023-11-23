@@ -16,7 +16,7 @@ data class FavouriteProductEntity(
     val image: String? = null,
 
     @ColumnInfo("price")
-    val price: Double? = null,
+    val price: Double = 0.0,
 
     @ColumnInfo("rating")
     @TypeConverters(RatingTypeConverter::class)

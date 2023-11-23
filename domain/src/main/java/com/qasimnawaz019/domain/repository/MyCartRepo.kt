@@ -9,5 +9,7 @@ interface MyCartRepo {
 
     suspend fun addToCart(product: Product)
 
+    suspend fun updateCart(product: Product)
+
     suspend fun removeCartById(id: Int)
 }

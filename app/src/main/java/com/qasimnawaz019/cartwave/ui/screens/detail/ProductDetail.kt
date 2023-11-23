@@ -117,7 +117,7 @@ fun ProductDetail(
         }
         product?.let {
             AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current).data(it.image).build(),
+                model = it.image,
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .fillMaxWidth()

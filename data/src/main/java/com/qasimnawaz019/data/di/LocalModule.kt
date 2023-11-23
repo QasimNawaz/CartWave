@@ -11,5 +11,5 @@ import org.koin.dsl.module
  * @constructor Create empty Network module
  */
 val localModule = module {
-    single<LocalDataSource> { LocalDataSourceImpl(get(), get()) }
+    single<LocalDataSource> { LocalDataSourceImpl(get(), get(), get()) }
 }

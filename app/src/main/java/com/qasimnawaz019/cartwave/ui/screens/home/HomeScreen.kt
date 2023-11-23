@@ -43,6 +43,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -50,11 +51,11 @@ import com.qasimnawaz019.cartwave.R
 import com.qasimnawaz019.cartwave.ui.components.CartWaveSurface
 import com.qasimnawaz019.cartwave.ui.components.VerticalGridProductsShimmer
 import com.qasimnawaz019.cartwave.ui.screens.graphs.MainScreenInfo
+import com.qasimnawaz019.cartwave.utils.ComposableLifecycle
 import com.qasimnawaz019.cartwave.utils.gridItems
-import com.qasimnawaz019.data.database.dao.FavouriteProductsDao
 import com.qasimnawaz019.domain.model.Product
+import com.qasimnawaz019.domain.model.Rating
 import com.qasimnawaz019.domain.utils.NetworkUiState
-import org.koin.androidx.compose.get
 import org.koin.androidx.compose.getViewModel
 
 @Composable
@@ -111,78 +112,74 @@ fun HomeScreen(
         }
     }
 
+    ComposableLifecycle { _, event ->
+        when (event) {
+            Lifecycle.Event.ON_CREATE -> {
+                Log.d("HomeScren", "onCreate")
+//                products.clear()
+//                viewModel.getProducts(10)
+            }
+
+            Lifecycle.Event.ON_START -> {
+                Log.d("HomeScren", "On Start")
+            }
+
+            Lifecycle.Event.ON_RESUME -> {
+                Log.d("HomeScren", "On Resume")
+            }
+
+            Lifecycle.Event.ON_PAUSE -> {
+                Log.d("HomeScren", "On Pause")
+            }
+
+            Lifecycle.Event.ON_STOP -> {
+                Log.d("HomeScren", "On Stop")
+            }
+
+            Lifecycle.Event.ON_DESTROY -> {
+                Log.d("HomeScren", "On Destroy")
+            }
+
+            else -> {}
+        }
+    }
+
     Scaffold(
         backgroundColor = MaterialTheme.colorScheme.background, modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
-        Column(Modifier.padding(innerPadding)) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 10.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                AsyncImage(
-                    model = R.drawable.my_profile,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(35.dp)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.FillBounds
-                )
-                Spacer(modifier = Modifier.width(10.dp))
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(color = MaterialTheme.colorScheme.onBackground, text = "Hi, Qasim")
-                    Text(
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
-                        text = "Let's go shopping"
-                    )
-                }
-                Spacer(modifier = Modifier.width(10.dp))
-                Icon(
-                    modifier = Modifier.size(25.dp),
-                    imageVector = Icons.Outlined.Search,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground
-                )
-                Spacer(modifier = Modifier.width(10.dp))
-                Icon(
-                    modifier = Modifier.size(25.dp),
-                    imageVector = Icons.Outlined.Notifications,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground
-                )
+        LazyColumn(
+            modifier = Modifier
+                .padding(innerPadding)
+                .nestedScroll(nestedScrollConnection),
+            state = lazyListState
+        ) {
+            item {
+                ImageSlider()
             }
-            LazyColumn(
-                modifier = Modifier.nestedScroll(nestedScrollConnection), state = lazyListState
-            ) {
-                item {
-                    ImageSlider()
-                }
-                gridItems(
-                    data = products,
-                    columnCount = 2,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                ) { index, product ->
-                    ProductItem(product = product, onUpdateFavourite = {
-                        products[index] = product.copy(isFavourite = product.isFavourite.not())
-                        if (product.isFavourite) {
-                            product.id?.let { viewModel.removeFavourite(it) }
-                        } else {
-                            viewModel.addToFavourite(products[index])
-                        }
-                    }) {
-                        onNavigate.invoke("${MainScreenInfo.ProductDetail.route}/${product.id}")
+            gridItems(
+                data = products,
+                columnCount = 2,
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                modifier = Modifier.padding(horizontal = 8.dp)
+            ) { index, product ->
+                ProductItem(product = product, onUpdateFavourite = {
+                    products[index] = product.copy(isFavourite = product.isFavourite.not())
+                    if (product.isFavourite) {
+                        product.id?.let { viewModel.removeFavourite(it) }
+                    } else {
+                        viewModel.addToFavourite(products[index])
                     }
+                    viewModel.reloadProducts(products.toList())
+                }) {
+                    onNavigate.invoke("${MainScreenInfo.ProductDetail.route}/${product.id}")
                 }
-                item {
-                    if (loading.value) {
-                        VerticalGridProductsShimmer()
-                    }
+            }
+            item {
+                if (loading.value) {
+                    VerticalGridProductsShimmer()
                 }
             }
         }
-
     }
 }
 

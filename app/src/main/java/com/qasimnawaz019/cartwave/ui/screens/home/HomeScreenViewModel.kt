@@ -1,6 +1,7 @@
 package com.qasimnawaz019.cartwave.ui.screens.home
 
 import android.util.Log
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.viewModelScope
 import com.qasimnawaz019.cartwave.base.BaseViewModel
 import com.qasimnawaz019.domain.model.Product
@@ -38,6 +39,12 @@ class HomeScreenViewModel(
     fun removeFavourite(id: Int) {
         viewModelScope.launch {
             removeFavouriteDatabaseUseCase.execute(RemoveFavouriteDatabaseUseCase.Params(id))
+        }
+    }
+
+    fun reloadProducts(products: List<Product>) {
+        viewModelScope.launch {
+            _networkUiState.emit(NetworkUiState.Success(products))
         }
     }
 }

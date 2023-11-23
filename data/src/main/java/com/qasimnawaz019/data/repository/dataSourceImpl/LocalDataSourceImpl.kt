@@ -8,11 +8,18 @@ import com.qasimnawaz019.data.database.entities.RatingEntity
 import com.qasimnawaz019.data.repository.dataSource.LocalDataSource
 import com.qasimnawaz019.domain.model.Product
 import com.qasimnawaz019.domain.model.Rating
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import java.util.stream.Collectors
 
 class LocalDataSourceImpl(
     private val favouriteProductsDao: FavouriteProductsDao,
-    private val myCartProductDao: MyCartProductDao
+    private val myCartProductDao: MyCartProductDao,
+    private val ioDispatcher: CoroutineDispatcher,
 ) : LocalDataSource {
     override suspend fun getFavouriteProducts(): List<Product> {
         return favouriteProductsDao.getFavouriteEntities().stream().map { entity ->
@@ -40,7 +47,7 @@ class LocalDataSourceImpl(
                     id = id,
                     title = title,
                     category = category,
-                    isFavourite = isFavourite.not()
+                    isFavourite = isFavourite
                 )
             )
         }
@@ -50,24 +57,44 @@ class LocalDataSourceImpl(
         favouriteProductsDao.deleteById(id)
     }
 
-    override suspend fun getMyCarts(): List<Product> {
-        return myCartProductDao.getMyCartEntities().stream().map { entity ->
-            Product(
-                image = entity.image,
-                price = entity.price,
-                rating = entity?.rating?.let { Rating(it.rate, it.count) },
-                description = entity.description,
-                id = entity.id,
-                title = entity.title,
-                category = entity.category,
-                isFavourite = false
-            )
-        }.collect(Collectors.toList())
+    override suspend fun getMyCarts(): Flow<List<Product>> {
+        return myCartProductDao.getMyCartEntities().map { cartEntities ->
+            cartEntities.map { entity ->
+                Product(
+                    image = entity.image,
+                    price = entity.price,
+                    rating = entity?.rating?.let { Rating(it.rate, it.count) },
+                    description = entity.description,
+                    id = entity.id,
+                    title = entity.title,
+                    category = entity.category,
+                    isFavourite = false,
+                    cartQty = entity.cartQty
+                )
+            }
+        }.flowOn(ioDispatcher)
     }
 
     override suspend fun addToCart(product: Product) {
         with(product) {
             myCartProductDao.addCartEntity(
+                MyCartProductEntity(
+                    image = image,
+                    price = price,
+                    rating = rating?.let { RatingEntity(it.rate, it.count) },
+                    description = description,
+                    id = id,
+                    title = title,
+                    category = category,
+                    cartQty = cartQty
+                )
+            )
+        }
+    }
+
+    override suspend fun updateCart(product: Product) {
+        with(product) {
+            myCartProductDao.updateCart(
                 MyCartProductEntity(
                     image = image,
                     price = price,
