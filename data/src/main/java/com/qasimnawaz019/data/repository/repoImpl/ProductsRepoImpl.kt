@@ -4,8 +4,9 @@ import com.qasimnawaz019.data.database.dao.FavouriteProductsDao
 import com.qasimnawaz019.data.database.dao.MyCartProductDao
 import com.qasimnawaz019.data.repository.dataSource.RemoteDataSource
 import com.qasimnawaz019.domain.model.Product
+import com.qasimnawaz019.domain.model.ProductsByCategoryItem
 import com.qasimnawaz019.domain.repository.ProductsRepo
-import com.qasimnawaz019.domain.utils.ApiResponse
+import com.qasimnawaz019.domain.utils.NetworkCall
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -18,13 +19,13 @@ class ProductsRepoImpl(
     private val myCartProductDao: MyCartProductDao
 ) : ProductsRepo {
 
-    override suspend fun getProducts(limit: Int): Flow<ApiResponse<List<Product>>> {
+    override suspend fun getProducts(limit: Int): Flow<NetworkCall<List<Product>>> {
         return flow {
             when (val remoteProducts = remoteData.getProducts(limit)) {
-                is ApiResponse.Success -> {
+                is NetworkCall.Success -> {
                     favouriteProductsDao.getFavouriteEntities().collect { collections ->
                         val cacheProducts = collections.associateBy { it.id }
-                        remoteProducts.body.onEach { product ->
+                        remoteProducts.data.onEach { product ->
                             product.isFavourite = cacheProducts.containsKey(product.id)
                         }
                         emit(remoteProducts)
@@ -38,18 +39,18 @@ class ProductsRepoImpl(
         }.flowOn(ioDispatcher)
     }
 
-    override suspend fun getProductDetail(productId: Int): Flow<ApiResponse<Product>> {
+    override suspend fun getProductDetail(productId: Int): Flow<NetworkCall<Product>> {
         return flow {
             val remoteProduct = remoteData.getProductDetail(productId)
             val cacheFavouriteProduct = favouriteProductsDao.getFavouriteById(productId)
             val cacheCartProduct = myCartProductDao.getCartById(productId)
             when (remoteProduct) {
-                is ApiResponse.Success -> {
+                is NetworkCall.Success -> {
                     if (cacheFavouriteProduct != null) {
-                        remoteProduct.body.isFavourite = true
+                        remoteProduct.data.isFavourite = true
                     }
                     cacheCartProduct?.let {
-                        remoteProduct.body.cartQty = it.cartQty
+                        remoteProduct.data.cartQty = it.cartQty
                     }
                     emit(remoteProduct)
                 }
@@ -59,6 +60,10 @@ class ProductsRepoImpl(
                 }
             }
         }.flowOn(ioDispatcher)
+    }
+
+    override suspend fun getProductByCategory(): Flow<NetworkCall<List<ProductsByCategoryItem>>> {
+        TODO("Not yet implemented")
     }
 
 }

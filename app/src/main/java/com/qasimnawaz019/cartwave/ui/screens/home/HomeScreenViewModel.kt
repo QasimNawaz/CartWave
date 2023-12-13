@@ -1,7 +1,6 @@
 package com.qasimnawaz019.cartwave.ui.screens.home
 
 import android.util.Log
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.viewModelScope
 import com.qasimnawaz019.cartwave.base.BaseViewModel
 import com.qasimnawaz019.domain.model.Product
@@ -22,11 +21,11 @@ class HomeScreenViewModel(
     }
 
     fun getProducts(limit: Int) {
-        viewModelScope.launch {
-            Log.d("HomeScren", "getProducts: $limit")
-            _networkUiState.emit(NetworkUiState.Loading)
-            productsUseCase.execute(ProductsUseCase.Params(limit)).asUiState()
-        }
+//        viewModelScope.launch {
+//            Log.d("HomeScren", "getProducts: $limit")
+//            _networkUiState.emit(NetworkUiState.Loading)
+//            productsUseCase.execute(ProductsUseCase.Params(limit)).asUiState()
+//        }
     }
 
     fun addToFavourite(product: Product) {

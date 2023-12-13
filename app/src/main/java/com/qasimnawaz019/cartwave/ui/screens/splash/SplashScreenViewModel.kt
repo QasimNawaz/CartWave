@@ -4,12 +4,14 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.qasimnawaz019.data.repository.datastore.DataStoreRepository
+import com.qasimnawaz019.domain.utils.NetworkConnectivity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class SplashScreenViewModel(
-    private val dataStoreRepository: DataStoreRepository
+    private val dataStoreRepository: DataStoreRepository,
+    private val networkConnectivity: NetworkConnectivity,
 ) : ViewModel() {
 
     private val _userLoggedInState = MutableStateFlow<Int>(-1)

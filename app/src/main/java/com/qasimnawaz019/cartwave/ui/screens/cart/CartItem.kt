@@ -16,8 +16,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,13 +25,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -42,7 +38,6 @@ import coil.request.ImageRequest
 import com.qasimnawaz019.cartwave.R
 import com.qasimnawaz019.cartwave.ui.components.CartWaveSurface
 import com.qasimnawaz019.domain.model.Product
-import com.qasimnawaz019.domain.model.Rating
 
 @Composable
 fun CartItem(product: Product, onCartQtyUpdate: (product: Product) -> Unit) {
@@ -76,32 +71,6 @@ fun CartItem(product: Product, onCartQtyUpdate: (product: Product) -> Unit) {
                 contentScale = ContentScale.Crop,
                 contentDescription = null,
             )
-//            Box(
-//                modifier = Modifier
-//                    .size(100.dp)
-//                    .clip(shape = MaterialTheme.shapes.medium)
-//                    .constrainAs(imageContainer) {
-//                        start.linkTo(parent.start)
-//                    },
-//            ) {
-//                AsyncImage(
-//                    modifier = Modifier
-//                        .size(100.dp)
-//                        .clip(shape = MaterialTheme.shapes.medium)
-//                        .constrainAs(imageContainer) {
-//                            start.linkTo(parent.start)
-//                        },
-//                    model = ImageRequest.Builder(LocalContext.current).data(product.image).build(),
-//                    contentScale = ContentScale.Crop,
-//                    contentDescription = null,
-//                )
-//                Icon(
-//                    modifier = Modifier.align(Alignment.TopStart),
-//                    imageVector = Icons.Outlined.Delete,
-//                    tint = Color.Red,
-//                    contentDescription = null
-//                )
-//            }
             Spacer(modifier = Modifier
                 .width(0.dp)
                 .fillMaxHeight()

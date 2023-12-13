@@ -1,14 +1,16 @@
 package com.qasimnawaz019.data.repository.dataSourceImpl
 
 import com.qasimnawaz019.data.repository.dataSource.RemoteDataSource
-import com.qasimnawaz019.data.utils.CATEGORIES
 import com.qasimnawaz019.data.utils.LOGIN
 import com.qasimnawaz019.data.utils.PRODUCTS
+import com.qasimnawaz019.data.utils.REGISTER
 import com.qasimnawaz019.data.utils.safeRequest
 import com.qasimnawaz019.domain.dto.login.LoginRequestDto
-import com.qasimnawaz019.domain.model.LoginResponse
+import com.qasimnawaz019.domain.dto.login.RegisterRequestDto
+import com.qasimnawaz019.domain.model.BaseResponse
 import com.qasimnawaz019.domain.model.Product
-import com.qasimnawaz019.domain.utils.ApiResponse
+import com.qasimnawaz019.domain.model.User
+import com.qasimnawaz019.domain.utils.NetworkCall
 import com.qasimnawaz019.domain.utils.NetworkConnectivity
 import io.ktor.client.HttpClient
 import io.ktor.client.request.parameter
@@ -22,7 +24,7 @@ class RemoteDataSourceImpl(
     private val client: HttpClient,
     private val networkConnectivity: NetworkConnectivity,
 ) : RemoteDataSource {
-    override suspend fun login(requestDto: LoginRequestDto): ApiResponse<LoginResponse> {
+    override suspend fun login(requestDto: LoginRequestDto): NetworkCall<BaseResponse<User>> {
         return client.safeRequest(networkConnectivity) {
             method = HttpMethod.Post
             url(LOGIN)
@@ -31,15 +33,16 @@ class RemoteDataSourceImpl(
         }
     }
 
-    override suspend fun getCategories(): ApiResponse<List<String>> {
+    override suspend fun register(requestDto: RegisterRequestDto): NetworkCall<BaseResponse<User>> {
         return client.safeRequest(networkConnectivity) {
-            method = HttpMethod.Get
-            url(CATEGORIES)
+            method = HttpMethod.Post
+            url(REGISTER)
             contentType(ContentType.Application.Json)
+            setBody(requestDto)
         }
     }
 
-    override suspend fun getProducts(limit: Int): ApiResponse<List<Product>> {
+    override suspend fun getProducts(limit: Int): NetworkCall<List<Product>> {
         return client.safeRequest(networkConnectivity) {
             method = HttpMethod.Get
             url(PRODUCTS)
@@ -48,7 +51,7 @@ class RemoteDataSourceImpl(
         }
     }
 
-    override suspend fun getProductDetail(productId: Int): ApiResponse<Product> {
+    override suspend fun getProductDetail(productId: Int): NetworkCall<Product> {
         return client.safeRequest(networkConnectivity) {
             method = HttpMethod.Get
             url("$PRODUCTS/$productId")

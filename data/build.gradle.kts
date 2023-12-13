@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.com.android.library)
     alias(libs.plugins.org.jetbrains.kotlin.android)
@@ -6,6 +9,13 @@ plugins {
 //    id("kotlin-kapt")
     alias(libs.plugins.ksp)
 //    alias(libs.plugins.dagger.hilt.android)
+}
+
+fun getLocalProperty(propertyName: String): String {
+    val properties = Properties().apply {
+        load(FileInputStream(rootProject.file("local.properties")))
+    }
+    return properties.getProperty(propertyName, "")
 }
 
 android {
@@ -20,6 +30,9 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "BASE_URL", "\"${getLocalProperty("baseUrl")}\"")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -28,6 +41,9 @@ android {
             )
         }
     }
+    buildFeatures {
+        buildConfig = true
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -35,6 +51,7 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+
 }
 
 dependencies {

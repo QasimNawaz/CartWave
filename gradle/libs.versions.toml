@@ -94,6 +94,7 @@ activity-compose = { module = "androidx.activity:activity-compose", version.ref 
 # Accompanist
 accompanist-flowlayout = { group = "com.google.accompanist", name = "accompanist-flowlayout", version.ref = "accompanist" }
 accompanist-systemuicontroller = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist" }
+accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
 
 # Hilt
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
@@ -151,6 +152,11 @@ androidx-dataStore-preferences = { group = "androidx.datastore", name = "datasto
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 
 [bundles]
+accompanist = [
+    "accompanist-flowlayout",
+    "accompanist-systemuicontroller",
+    "accompanist-permissions"
+]
 common = [
     "androidx-core-ktx",
     "appcompat",

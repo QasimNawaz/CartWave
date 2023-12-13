@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -44,8 +45,7 @@ fun ImageSlider() {
     ) {
         Column {
             HorizontalPager(
-                modifier = Modifier
-                    .weight(9f),
+                modifier = Modifier.weight(9f),
                 state = pagerState,
             ) { position ->
                 Box(
@@ -63,20 +63,24 @@ fun ImageSlider() {
                             modifier = Modifier
                                 .fillMaxSize()
                                 .background(color = MaterialTheme.colorScheme.primaryContainer)
-                                .padding(10.dp)
+                                .padding(end = 100.dp, start = 10.dp, top = 10.dp, bottom = 10.dp)
                         ) {
                             Text(
                                 text = pages[position].title,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                                fontWeight = FontWeight.Medium
+                                fontWeight = FontWeight.Medium,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                             Text(
                                 text = pages[position].description,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 fontSize = MaterialTheme.typography.labelLarge.fontSize,
                                 fontWeight = FontWeight.Light,
-                                lineHeight = 16.sp
+                                lineHeight = 16.sp,
+                                maxLines = 3,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
                     }
@@ -111,20 +115,20 @@ sealed class ImageSliderPage(
 ) {
 
     object First : ImageSliderPage(
-        image = R.drawable.ic_headphone,
-        title = "Electronics !!",
-        description = "Empower Your Lifestyle with\nSmart Electronics."
+        image = R.drawable.image_men_inner,
+        title = "Seasonal Showstoppers",
+        description = "Get ready to slay the season! Dive into our curated seasonal picks and make a statement with your wardrobe"
     )
 
     object Second : ImageSliderPage(
         image = R.drawable.ic_womens_fashion,
-        title = "Women's Fashion !!",
-        description = "Unleash Your Inner Fashionista\nwith Us."
+        title = "Luxury Within Reach",
+        description = "Indulge in luxury without breaking the bank. Discover premium fashion at prices that delight"
     )
 
     object Third : ImageSliderPage(
         image = R.drawable.ic_mens_fashion,
-        title = "Men's Fashion !!",
-        description = "Suits, Streetwear, and Beyond – Your\nFashion Odyssey Begins.."
+        title = "Fashion for Every Occasion",
+        description = "From casual hangouts to elegant soirées, find the perfect outfit for every event. Elevate your style effortlessly."
     )
 }

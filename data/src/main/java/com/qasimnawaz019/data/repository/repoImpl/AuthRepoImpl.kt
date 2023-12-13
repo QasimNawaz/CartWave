@@ -2,9 +2,11 @@ package com.qasimnawaz019.data.repository.repoImpl
 
 import com.qasimnawaz019.data.repository.dataSource.RemoteDataSource
 import com.qasimnawaz019.domain.dto.login.LoginRequestDto
-import com.qasimnawaz019.domain.model.LoginResponse
+import com.qasimnawaz019.domain.dto.login.RegisterRequestDto
+import com.qasimnawaz019.domain.model.BaseResponse
+import com.qasimnawaz019.domain.model.User
 import com.qasimnawaz019.domain.repository.AuthRepo
-import com.qasimnawaz019.domain.utils.ApiResponse
+import com.qasimnawaz019.domain.utils.NetworkCall
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -16,9 +18,15 @@ class AuthRepoImpl(
 ) : AuthRepo {
     override suspend fun login(
         requestDto: LoginRequestDto
-    ): Flow<ApiResponse<LoginResponse>> {
+    ): Flow<NetworkCall<BaseResponse<User>>> {
         return flow {
             emit(remoteData.login(requestDto))
+        }.flowOn(ioDispatcher)
+    }
+
+    override suspend fun register(requestDto: RegisterRequestDto): Flow<NetworkCall<BaseResponse<User>>> {
+        return flow {
+            emit(remoteData.register(requestDto))
         }.flowOn(ioDispatcher)
     }
 }

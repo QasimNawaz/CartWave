@@ -1,10 +1,6 @@
 package com.qasimnawaz019.cartwave.ui.screens.splash
 
-import android.app.Activity
-import android.graphics.Rect
 import android.util.Log
-import android.view.View
-import android.view.Window
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateIntOffsetAsState
 import androidx.compose.animation.core.spring
@@ -36,13 +32,11 @@ import androidx.compose.ui.graphics.asAndroidPath
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.vector.PathParser
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.core.graphics.flatten
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.qasimnawaz019.cartwave.R
 import com.qasimnawaz019.cartwave.utils.navigateTo
@@ -64,16 +58,16 @@ fun SplashScreen(
 //    val statusBarHeight = rectangle.top
 //    Log.d("SplashScreen", "statusBarHeight: $statusBarHeight")
 
-
-    val loginState: Int by viewModel.userLoggedInState.collectAsStateWithLifecycle()
-
-    if (loginState == 1) {
-        LaunchedEffect(key1 = true, block = {
-            navigateTo(
-                navController = navController, destination = startDestination, true
-            )
-        })
+    val shouldContinue = remember {
+        mutableStateOf(false)
     }
+
+
+    LaunchedEffect(key1 = shouldContinue, block = {
+        navigateTo(
+            navController = navController, destination = startDestination, true
+        )
+    })
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -134,7 +128,8 @@ fun SplashScreen(
             coroutineScope.launch {
                 progress.animateTo(1f, animationSpec = tween(3000), block = {
                     if (this.value == 1f) {
-                        viewModel.isUserLoggedIn()
+//                        viewModel.isUserLoggedIn()
+                        shouldContinue.value = true
                     }
                 })
             }

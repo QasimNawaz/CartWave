@@ -6,7 +6,7 @@ import com.qasimnawaz019.data.database.dao.FavouriteProductsDao
 import com.qasimnawaz019.data.utils.PRODUCTS
 import com.qasimnawaz019.data.utils.safeRequest
 import com.qasimnawaz019.domain.model.Product
-import com.qasimnawaz019.domain.utils.ApiResponse
+import com.qasimnawaz019.domain.utils.NetworkCall
 import com.qasimnawaz019.domain.utils.NetworkConnectivity
 import io.ktor.client.HttpClient
 import io.ktor.client.request.parameter
@@ -14,9 +14,6 @@ import io.ktor.client.request.url
 import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.map
 
 class ProductsPagingSource(
     private val client: HttpClient,
@@ -42,12 +39,12 @@ class ProductsPagingSource(
                 contentType(ContentType.Application.Json)
             }
             when (response) {
-                is ApiResponse.Error.GenericError -> LoadResult.Error(Throwable(response.message))
-                is ApiResponse.Error.HttpError -> LoadResult.Error(Throwable(response.message))
-                is ApiResponse.Error.NoNetwork -> LoadResult.Error(Throwable(response.cause.message))
-                is ApiResponse.Error.SerializationError -> LoadResult.Error(Throwable(response.message))
-                is ApiResponse.Success -> {
-                    val remoteProducts = response.body
+                is NetworkCall.Error.GenericError -> LoadResult.Error(Throwable(response.message))
+                is NetworkCall.Error.HttpError -> LoadResult.Error(Throwable(response.message))
+                is NetworkCall.Error.NoNetwork -> LoadResult.Error(Throwable(response.cause.message))
+                is NetworkCall.Error.SerializationError -> LoadResult.Error(Throwable(response.message))
+                is NetworkCall.Success -> {
+                    val remoteProducts = response.data
                     productsDao.getFavouriteEntities().collect { collections ->
                         val cacheProducts = collections.associateBy { it.id }
                         remoteProducts.onEach { product ->
@@ -61,7 +58,7 @@ class ProductsPagingSource(
                     LoadResult.Page(
                         data = remoteProducts,
                         prevKey = if (page == 1) null else page.minus(1),
-                        nextKey = if (response.body.isEmpty()) null else page.plus(
+                        nextKey = if (response.data.isEmpty()) null else page.plus(
                             1
                         ),
                     )

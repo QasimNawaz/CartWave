@@ -4,13 +4,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -36,6 +38,8 @@ fun CartWaveOutlinedTextField(
     onValueChange: ((String) -> Unit),
     label: String,
     keyboardType: KeyboardType = KeyboardType.Text,
+    imeAction: ImeAction = ImeAction.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
     iconDrawable: Int?
 ) {
     Column {
@@ -45,7 +49,11 @@ fun CartWaveOutlinedTextField(
             onValueChange = { onValueChange(it) },
             label = { Text(text = label) },
             isError = isError,
-            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = keyboardType,
+                imeAction = imeAction
+            ),
+            keyboardActions = keyboardActions,
             trailingIcon = {
                 iconDrawable?.let {
                     Icon(
@@ -88,6 +96,8 @@ fun CartWaveOutlinedTextFieldPassword(
     errorMessage: String? = "",
     onValueChange: ((String) -> Unit),
     label: String,
+    imeAction: ImeAction = ImeAction.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
 ) {
     var showPassword by remember { mutableStateOf(value = false) }
     Column {
@@ -102,7 +112,11 @@ fun CartWaveOutlinedTextFieldPassword(
             } else {
                 PasswordVisualTransformation()
             },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = imeAction
+            ),
+            keyboardActions = keyboardActions,
             trailingIcon = {
                 if (showPassword) {
                     IconButton(onClick = { showPassword = false }) {

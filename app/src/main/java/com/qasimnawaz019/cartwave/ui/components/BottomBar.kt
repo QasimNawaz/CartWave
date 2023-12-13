@@ -2,7 +2,6 @@ package com.qasimnawaz019.cartwave.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -35,7 +34,6 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.qasimnawaz019.cartwave.R
-import com.qasimnawaz019.cartwave.ui.screens.graphs.MainScreenInfo
 
 @Composable
 fun BottomBar(
@@ -54,14 +52,9 @@ fun BottomBar(
     val shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp)
     if (bottomBarDestination) {
         CartWaveSurface(
-            color = MaterialTheme.colorScheme.surface,
+            color = MaterialTheme.colorScheme.primaryContainer,
             modifier = Modifier
                 .padding(top = 1.dp),
-//                .border(
-//                    width = 1.dp,
-//                    color = MaterialTheme.colorScheme.primary,
-//                    shape = shape
-//                ),
             elevation = 4.dp,
             shape = shape
         ) {
@@ -134,48 +127,6 @@ fun AddItem(
             tint = if (selected) Color.White else MaterialTheme.colorScheme.primary,
         )
     }
-//    Box(
-//        modifier = Modifier
-//            .height(30.dp)
-//            .clip(CircleShape)
-//            .background(
-//                color = if (selected) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else Color.Transparent,
-//            )
-//            .clickable(onClick = {
-//                navController.navigate(screen.route) {
-//                    popUpTo(navController.graph.findStartDestination().id)
-//                    launchSingleTop = true
-//                }
-//            }), contentAlignment = Alignment.Center
-//    ) {
-//        Row(
-//            verticalAlignment = Alignment.CenterVertically,
-//            horizontalArrangement = Arrangement.spacedBy(4.dp)
-//        ) {
-//            Icon(
-//                modifier = Modifier
-//                    .width(30.dp)
-//                    .height(30.dp)
-//                    .clip(CircleShape)
-//                    .background(color = if (selected) MaterialTheme.colorScheme.primary else Color.Transparent)
-//                    .padding(5.dp),
-//                painter = painterResource(id = screen.icon),
-//                contentDescription = "icon",
-//                tint = if (selected) Color.White else MaterialTheme.colorScheme.primary,
-//            )
-//            AnimatedVisibility(visible = selected) {
-//                Text(
-//                    modifier = Modifier.padding(
-//                        start = 5.dp,
-//                        end = 10.dp,
-//                        top = 8.dp,
-//                        bottom = 8.dp
-//                    ),
-//                    text = screen.title, color = Color.White, fontSize = 11.sp
-//                )
-//            }
-//        }
-//    }
 }
 
 val BottomNavHeight = 52.dp

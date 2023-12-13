@@ -2,7 +2,7 @@ package com.qasimnawaz019.cartwave.ui.components
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,11 +22,9 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -46,13 +44,6 @@ fun AlertMessageDialog(
     onDismiss: () -> Unit = {}
 ) {
 
-    val context = LocalContext.current
-
-    // This helps to disable the ripple effect
-    val interactionSource = remember {
-        MutableInteractionSource()
-    }
-
     AlertDialog(
         onDismissRequest = {}, properties = DialogProperties(
             dismissOnBackPress = false,
@@ -66,7 +57,9 @@ fun AlertMessageDialog(
             shape = RoundedCornerShape(size = 12.dp)
         ) {
             Column(
-                modifier = Modifier.padding(all = 16.dp),
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.secondaryContainer)
+                    .padding(all = 16.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

@@ -41,7 +41,7 @@ fun LoadingDialog(
             modifier = Modifier
                 .padding(start = 42.dp, end = 42.dp) // margin
                 .background(
-                    color = MaterialTheme.colorScheme.surface,
+                    color = MaterialTheme.colorScheme.secondaryContainer,
                     shape = RoundedCornerShape(cornerRadius)
                 )
                 .padding(top = 36.dp, bottom = 36.dp), // inner padding
@@ -61,7 +61,7 @@ fun LoadingDialog(
             Text(
                 text = "Please wait...",
                 style = TextStyle(
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Normal
                 )

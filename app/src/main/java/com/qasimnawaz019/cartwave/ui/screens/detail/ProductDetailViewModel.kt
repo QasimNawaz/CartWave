@@ -9,7 +9,6 @@ import com.qasimnawaz019.domain.usecase.AddToFavouriteDatabaseUseCase
 import com.qasimnawaz019.domain.usecase.ProductUseCase
 import com.qasimnawaz019.domain.usecase.RemoveFavouriteDatabaseUseCase
 import com.qasimnawaz019.domain.usecase.RemoveFromCartDatabaseUseCase
-import com.qasimnawaz019.domain.utils.NetworkUiState
 import kotlinx.coroutines.launch
 
 class ProductDetailViewModel(
@@ -21,10 +20,10 @@ class ProductDetailViewModel(
 ) : BaseViewModel<Product>() {
 
     fun getProductDetail(productId: Int) {
-        viewModelScope.launch {
-            _networkUiState.emit(NetworkUiState.Loading)
-            productUseCase.execute(ProductUseCase.Params(productId)).asUiState()
-        }
+//        viewModelScope.launch {
+//            _networkUiState.emit(NetworkUiState.Loading)
+//            productUseCase.execute(ProductUseCase.Params(productId)).asUiState()
+//        }
     }
 
     fun addToCart(product: Product) {

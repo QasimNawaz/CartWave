@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
-
 plugins {
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
@@ -73,12 +71,14 @@ dependencies {
     debugImplementation(libs.bundles.compose.common.debug.impl)
     androidTestImplementation(libs.compose.junit4)
 
-    implementation(libs.accompanist.systemuicontroller)
+    implementation(libs.bundles.accompanist)
 
 //    implementation(libs.bundles.hilt)
 //    kapt(libs.hilt.android.compiler)
     implementation(libs.bundles.koin)
     testImplementation(libs.koin.test)
+
+    implementation(libs.bundles.ktor)
 
     implementation(libs.bundles.paging)
 

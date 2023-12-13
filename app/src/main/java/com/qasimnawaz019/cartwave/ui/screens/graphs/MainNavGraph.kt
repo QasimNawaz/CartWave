@@ -3,10 +3,10 @@ package com.qasimnawaz019.cartwave.ui.screens.graphs
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
-import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.qasimnawaz019.cartwave.ui.screens.MainScreen
+import com.qasimnawaz019.cartwave.ui.screens.checkout.CheckOutScreen
 import com.qasimnawaz019.cartwave.ui.screens.detail.ProductDetail
 import com.qasimnawaz019.cartwave.utils.composableScaleTransition
 import com.qasimnawaz019.cartwave.utils.navigateTo
@@ -31,6 +31,10 @@ fun NavGraphBuilder.mainNavigationGraph(navController: NavHostController) {
                 ProductDetail(navController, it)
             }
         }
+
+        composableScaleTransition(route = MainScreenInfo.CheckOut.route) {
+            CheckOutScreen(navController)
+        }
     }
 }
 
@@ -38,4 +42,6 @@ sealed class MainScreenInfo(val route: String) {
     object Main : MainScreenInfo(route = "MAIN")
 
     object ProductDetail : MainScreenInfo(route = "PRODUCT_DETAIL")
+
+    object CheckOut : MainScreenInfo(route = "CHECKOUT")
 }

@@ -2,7 +2,8 @@ package com.qasimnawaz019.cartwave.base
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.qasimnawaz019.domain.utils.ApiResponse
+import com.qasimnawaz019.domain.model.BaseResponse
+import com.qasimnawaz019.domain.utils.NetworkCall
 import com.qasimnawaz019.domain.utils.NetworkUiState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,10 +15,10 @@ open class BaseViewModel<T> : ViewModel() {
     internal val _networkUiState = MutableStateFlow<NetworkUiState<T>>(NetworkUiState.Empty)
     val networkUiState: StateFlow<NetworkUiState<T>> = _networkUiState.asStateFlow()
 
-    suspend fun Flow<ApiResponse<T>>.asUiState() {
+    suspend fun Flow<NetworkCall<BaseResponse<T>>>.asUiState() {
         this.collect {
             when (it) {
-                is ApiResponse.Error.NoNetwork -> {
+                is NetworkCall.Error.NoNetwork -> {
                     Log.d("asUiState", "ApiResponse.Error.NoNetwork Emit")
                     _networkUiState.emit(
                         NetworkUiState.Error(
@@ -27,7 +28,7 @@ open class BaseViewModel<T> : ViewModel() {
                     )
                 }
 
-                is ApiResponse.Error.HttpError -> {
+                is NetworkCall.Error.HttpError -> {
                     Log.d("asUiState", "ApiResponse.Error.HttpError Emit")
                     _networkUiState.emit(
                         NetworkUiState.Error(
@@ -37,19 +38,23 @@ open class BaseViewModel<T> : ViewModel() {
                     )
                 }
 
-                is ApiResponse.Error.SerializationError -> {
+                is NetworkCall.Error.SerializationError -> {
                     Log.d("asUiState", "ApiResponse.Error.SerializationError Emit")
                     _networkUiState.emit(NetworkUiState.Error(error = "${it.message}"))
                 }
 
-                is ApiResponse.Error.GenericError -> {
+                is NetworkCall.Error.GenericError -> {
                     Log.d("asUiState", "ApiResponse.Error.GenericError Emit")
                     _networkUiState.emit(NetworkUiState.Error(error = "${it.message}"))
                 }
 
-                is ApiResponse.Success -> {
+                is NetworkCall.Success -> {
                     Log.d("asUiState", "ApiResponse.Success Emit")
-                    _networkUiState.emit(NetworkUiState.Success(it.body))
+                    if (it.data.success && it.data.data != null) {
+                        _networkUiState.emit(NetworkUiState.Success(it.data.data!!))
+                    } else {
+                        _networkUiState.emit(NetworkUiState.Error(error = it.data.message))
+                    }
                 }
             }
         }
