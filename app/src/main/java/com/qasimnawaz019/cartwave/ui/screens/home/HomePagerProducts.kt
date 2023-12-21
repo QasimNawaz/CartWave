@@ -25,6 +25,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.qasimnawaz019.cartwave.R
+import com.qasimnawaz019.cartwave.ui.components.EmptyView
 import com.qasimnawaz019.cartwave.ui.components.HomeScreenShimmer
 import com.qasimnawaz019.cartwave.utils.gridItems
 import com.qasimnawaz019.cartwave.utils.rememberLifecycleEvent
@@ -94,11 +96,12 @@ fun HomePagerProducts(
         }
     }
 
-//    Scaffold(
-//        modifier = Modifier.fillMaxSize()
-//    ) { innerPadding ->
-//
-//    }
+    if (!loading.value && !error.value.isNullOrBlank()) {
+        EmptyView(
+            drawable = R.drawable.ic_network_error,
+            text = error.value ?: "Something went wrong"
+        )
+    }
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(), state = lazyListState

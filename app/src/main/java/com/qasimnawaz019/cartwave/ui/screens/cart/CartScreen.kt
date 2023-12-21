@@ -100,8 +100,7 @@ fun CartScreen(
 //        bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
     )
 
-    BottomSheetScaffold(
-        backgroundColor = MaterialTheme.colorScheme.background,
+    BottomSheetScaffold(backgroundColor = MaterialTheme.colorScheme.background,
         scaffoldState = scaffoldState,
         drawerGesturesEnabled = scaffoldState.drawerState.isOpen,
         sheetShape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
@@ -209,12 +208,15 @@ fun CartScreen(
                 }
             }
         }) {
-        if (products.isEmpty() && !loading.value) {
-            EmptyView(R.drawable.ic_cart_3d, "Your cart is empty")
+        if (!loading.value && !error.value.isNullOrBlank()) {
+            EmptyView(
+                drawable = R.drawable.ic_network_error, text = error.value ?: "Something went wrong"
+            )
+        } else if (products.isEmpty() && !loading.value) {
+            EmptyView(R.drawable.ic_empty_cart, "Your cart is empty")
         }
         LazyColumn(
-            state = lazyListState,
-            modifier = Modifier
+            state = lazyListState, modifier = Modifier
                 .fillMaxSize()
                 .padding(bottom = 120.dp)
         ) {
@@ -223,8 +225,7 @@ fun CartScreen(
                     CartItem(product, onCartQtyUpdate = { cartQty ->
                         product.id?.let { _id ->
                             if (cartQty != 0) {
-                                viewModel.addToCart(
-                                    _id,
+                                viewModel.addToCart(_id,
                                     cartQty,
                                     products.toMutableStateList().apply {
                                         this[index] = product.copy(cartQty = cartQty)

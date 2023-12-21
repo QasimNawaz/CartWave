@@ -1,11 +1,8 @@
 plugins {
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
-//    id("kotlin-parcelize")
     id("kotlinx-serialization")
-//    id("kotlin-kapt")
     alias(libs.plugins.ksp)
-//    alias(libs.plugins.dagger.hilt.android)
     alias(libs.plugins.gms.google.services)
 }
 
@@ -60,12 +57,11 @@ dependencies {
     implementation(project(":domain"))
     implementation(libs.bundles.common)
     implementation(libs.androidx.core.splashscreen)
-//    implementation(libs.kotlinx.serialization.json)
     testImplementation(libs.junit)
     androidTestImplementation(libs.bundles.testing)
 
-    implementation(libs.compose.bom)
-    androidTestImplementation(libs.compose.bom)
+    implementation(platform(libs.compose.bom))
+    androidTestImplementation(platform(libs.compose.bom))
 
     implementation(libs.bundles.compose.common.impl)
     debugImplementation(libs.bundles.compose.common.debug.impl)
@@ -73,14 +69,12 @@ dependencies {
 
     implementation(libs.bundles.accompanist)
 
-//    implementation(libs.bundles.hilt)
-//    kapt(libs.hilt.android.compiler)
     implementation(libs.bundles.koin)
     testImplementation(libs.koin.test)
 
     implementation(libs.bundles.ktor)
 
-    implementation(libs.bundles.paging)
+    api(libs.bundles.paging)
 
     implementation(libs.bundles.coil)
 

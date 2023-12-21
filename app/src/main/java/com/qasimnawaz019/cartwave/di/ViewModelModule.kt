@@ -23,5 +23,5 @@ val viewModelModule = module {
     viewModel { ProductDetailViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { WishlistScreenViewModel(get(), get()) }
     viewModel { CartScreenViewModel(get(), get(), get()) }
-    viewModel { CheckOutScreenViewModel() }
+    viewModel { CheckOutScreenViewModel(get()) }
 }

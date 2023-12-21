@@ -51,9 +51,25 @@ fun WishlistScreen(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        if (favourites.itemCount == 0 && favourites.loadState.refresh != LoadState.Loading) {
-            EmptyView(R.drawable.ic_heart_3d, "Your wishlist is empty")
+        favourites.apply {
+            when {
+                loadState.refresh is LoadState.Error -> {
+                    EmptyView(
+                        R.drawable.ic_network_error,
+                        (loadState.refresh as LoadState.Error).error.message
+                            ?: "Something went wrong"
+                    )
+                }
+
+                loadState.refresh != LoadState.Loading && itemCount == 0 -> {
+                    EmptyView(R.drawable.ic_empty_wish_list, "Your wishlist is empty")
+                }
+            }
         }
+
+//        if (favourites.itemCount == 0 && favourites.loadState.refresh != LoadState.Loading) {
+//            EmptyView(R.drawable.ic_empty_wish_list, "Your wishlist is empty")
+//        }
         FavouritesGrid(
             favourites = favourites, onNavigate = onNavigate
         ) {
@@ -82,7 +98,7 @@ fun FavouritesGrid(
                     })
                 }
             }
-            if (favourites.loadState.refresh == LoadState.Loading || favourites.loadState.append == LoadState.Loading) {
+            if (favourites.loadState.refresh == LoadState.Loading) {
                 items(2) {
                     VerticalGridProductsShimmer()
                 }
