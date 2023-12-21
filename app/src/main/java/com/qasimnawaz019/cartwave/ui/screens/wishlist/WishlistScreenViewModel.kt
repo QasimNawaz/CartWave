@@ -1,38 +1,52 @@
 package com.qasimnawaz019.cartwave.ui.screens.wishlist
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.qasimnawaz019.domain.model.Product
-import com.qasimnawaz019.domain.usecase.GetFavouritesDatabaseUseCase
-import com.qasimnawaz019.domain.usecase.RemoveFavouriteDatabaseUseCase
+import com.qasimnawaz019.domain.usecase.FavouritesPagingUseCase
+import com.qasimnawaz019.domain.usecase.RemoveFromFavouriteUseCase
+import com.qasimnawaz019.domain.utils.NetworkCall
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class WishlistScreenViewModel(
-    private val getFavouritesDatabaseUseCase: GetFavouritesDatabaseUseCase,
-    private val removeFavouriteDatabaseUseCase: RemoveFavouriteDatabaseUseCase
+    private val removeFromFavouriteUseCase: RemoveFromFavouriteUseCase,
+    private val favouritesPagingUseCase: FavouritesPagingUseCase
 ) : ViewModel() {
 
-    private val _favouriteProducts = MutableStateFlow<List<Product>>(emptyList())
-    val favouriteProducts: StateFlow<List<Product>> = _favouriteProducts.asStateFlow()
+    private val _reLoad = MutableStateFlow<Boolean>(false)
+    val reLoad: StateFlow<Boolean> = _reLoad.asStateFlow()
 
-    init {
-        getWishlist()
-    }
+    val pagingData: Flow<PagingData<Product>> =
+        favouritesPagingUseCase.execute(Unit).cachedIn(viewModelScope)
 
-    private fun getWishlist() {
+
+    fun removeFromFavourite(productId: Int) {
         viewModelScope.launch {
-            getFavouritesDatabaseUseCase.execute(Unit).collect {
-                _favouriteProducts.emit(it)
-            }
+            removeFromFavouriteUseCase.execute(RemoveFromFavouriteUseCase.Params(productId))
+                .collectLatest {
+                    when (it) {
+                        is NetworkCall.Success -> {
+                            if (it.data.success) {
+                                Log.d("WishlistScreen", "removeFromFavourite Success")
+                                _reLoad.value = true
+                            }
+                        }
+
+                        else -> {}
+                    }
+                }
         }
     }
 
-    fun removeFavourite(id: Int) {
-        viewModelScope.launch {
-            removeFavouriteDatabaseUseCase.execute(RemoveFavouriteDatabaseUseCase.Params(id))
-        }
+    fun updateReload(reLoad: Boolean = false) {
+        _reLoad.value = reLoad
     }
 }

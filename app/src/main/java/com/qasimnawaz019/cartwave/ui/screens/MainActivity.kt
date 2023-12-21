@@ -17,8 +17,16 @@ class MainActivity : ComponentActivity() {
     private val viewModel: MainActivityViewModel by viewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+//        WindowCompat.setDecorFitsSystemWindows(window, false)
+//        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = true
+
 //        WindowCompat.setDecorFitsSystemWindows(window, true)
-        installSplashScreen()
+        installSplashScreen().apply {
+            setKeepOnScreenCondition {
+                viewModel.uiState.value.startDestination == null
+            }
+        }
         setContent {
             MaterialTheme {
                 val uiState: UiState by viewModel.uiState.collectAsStateWithLifecycle()

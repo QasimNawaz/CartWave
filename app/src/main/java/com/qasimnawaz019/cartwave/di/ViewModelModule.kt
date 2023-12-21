@@ -19,9 +19,9 @@ val viewModelModule = module {
     viewModel { LoginScreenViewModel(get(), get()) }
     viewModel { RegisterScreenViewModel(get(), get()) }
     viewModel { SplashScreenViewModel(get(), get()) }
-    viewModel { HomeScreenViewModel(get(), get(), get()) }
-    viewModel { ProductDetailViewModel(get(), get(), get(), get(), get()) }
+    viewModel { HomeScreenViewModel(get(), get(), get(), get(), get()) }
+    viewModel { ProductDetailViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { WishlistScreenViewModel(get(), get()) }
     viewModel { CartScreenViewModel(get(), get(), get()) }
-    viewModel { CheckOutScreenViewModel(get()) }
+    viewModel { CheckOutScreenViewModel() }
 }

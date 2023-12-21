@@ -66,7 +66,8 @@ fun CheckoutItem(product: Product) {
                     .constrainAs(imageContainer) {
                         start.linkTo(parent.start)
                     },
-                model = ImageRequest.Builder(LocalContext.current).data(product.image).build(),
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(product.images.firstOrNull()).build(),
                 contentScale = ContentScale.Crop,
                 contentDescription = null,
             )
@@ -95,7 +96,7 @@ fun CheckoutItem(product: Product) {
                     end.linkTo(parent.end, 4.dp)
                     bottom.linkTo(parent.bottom, 4.dp)
                 },
-                text = "$ ${product.price} x ${product.cartQty}",
+                text = "$ ${product.sellingPrice} x ${product.cartQty}",
                 fontSize = MaterialTheme.typography.titleMedium.fontSize,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontWeight = FontWeight.Bold

@@ -18,10 +18,6 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,10 +36,7 @@ import com.qasimnawaz019.cartwave.ui.components.CartWaveSurface
 import com.qasimnawaz019.domain.model.Product
 
 @Composable
-fun CartItem(product: Product, onCartQtyUpdate: (product: Product) -> Unit) {
-    var cartQty by remember {
-        mutableIntStateOf(product.cartQty)
-    }
+fun CartItem(product: Product, onCartQtyUpdate: (cartQty: Int) -> Unit) {
     CartWaveSurface(
         color = MaterialTheme.colorScheme.surfaceVariant,
         modifier = Modifier
@@ -67,7 +60,8 @@ fun CartItem(product: Product, onCartQtyUpdate: (product: Product) -> Unit) {
                     .constrainAs(imageContainer) {
                         start.linkTo(parent.start)
                     },
-                model = ImageRequest.Builder(LocalContext.current).data(product.image).build(),
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(product.images.firstOrNull()).build(),
                 contentScale = ContentScale.Crop,
                 contentDescription = null,
             )
@@ -96,7 +90,7 @@ fun CartItem(product: Product, onCartQtyUpdate: (product: Product) -> Unit) {
                     end.linkTo(parent.end, 4.dp)
                     bottom.linkTo(parent.bottom, 4.dp)
                 },
-                text = "$ ${product.price}",
+                text = "$ ${product.sellingPrice}",
                 fontSize = MaterialTheme.typography.titleMedium.fontSize,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontWeight = FontWeight.Bold
@@ -124,8 +118,7 @@ fun CartItem(product: Product, onCartQtyUpdate: (product: Product) -> Unit) {
                         .background(color = MaterialTheme.colorScheme.secondary)
                         .padding(2.dp),
                         onClick = {
-                            cartQty -= 1
-                            onCartQtyUpdate.invoke(product.copy(cartQty = cartQty))
+                            onCartQtyUpdate.invoke(product.cartQty - 1)
                         }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_minus),
@@ -134,7 +127,7 @@ fun CartItem(product: Product, onCartQtyUpdate: (product: Product) -> Unit) {
                         )
                     }
                     Text(
-                        text = "$cartQty",
+                        text = "${product.cartQty}",
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
                         fontSize = MaterialTheme.typography.titleSmall.fontSize,
                         fontWeight = FontWeight.Bold
@@ -145,8 +138,7 @@ fun CartItem(product: Product, onCartQtyUpdate: (product: Product) -> Unit) {
                         .background(color = MaterialTheme.colorScheme.primary)
                         .padding(2.dp),
                         onClick = {
-                            cartQty += 1
-                            onCartQtyUpdate.invoke(product.copy(cartQty = cartQty))
+                            onCartQtyUpdate.invoke(product.cartQty + 1)
                         }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_plus),

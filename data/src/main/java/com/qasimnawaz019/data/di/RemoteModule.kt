@@ -1,7 +1,8 @@
 package com.qasimnawaz019.data.di
 
-import com.qasimnawaz019.data.repository.dataSourceImpl.RemoteDataSourceImpl
+import com.qasimnawaz019.data.repository.dataSource.FavouritesPagingSourceFactory
 import com.qasimnawaz019.data.repository.dataSource.RemoteDataSource
+import com.qasimnawaz019.data.repository.dataSourceImpl.RemoteDataSourceImpl
 import org.koin.dsl.module
 
 /**
@@ -11,5 +12,6 @@ import org.koin.dsl.module
  * @constructor Create empty Network module
  */
 val remoteModule = module {
-    single<RemoteDataSource> { RemoteDataSourceImpl(get(), get()) }
+    single<RemoteDataSource> { RemoteDataSourceImpl(get(), get(), get()) }
+    factory { FavouritesPagingSourceFactory(get(), get(), get()) }
 }

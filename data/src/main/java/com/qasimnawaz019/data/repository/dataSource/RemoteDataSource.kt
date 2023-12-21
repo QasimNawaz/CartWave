@@ -4,6 +4,7 @@ import com.qasimnawaz019.domain.dto.login.LoginRequestDto
 import com.qasimnawaz019.domain.dto.login.RegisterRequestDto
 import com.qasimnawaz019.domain.model.BaseResponse
 import com.qasimnawaz019.domain.model.Product
+import com.qasimnawaz019.domain.model.ProductsByCategoryItem
 import com.qasimnawaz019.domain.model.User
 import com.qasimnawaz019.domain.utils.NetworkCall
 
@@ -12,7 +13,18 @@ interface RemoteDataSource {
 
     suspend fun register(requestDto: RegisterRequestDto): NetworkCall<BaseResponse<User>>
 
-    suspend fun getProducts(limit: Int): NetworkCall<List<Product>>
+    suspend fun getProductDetail(productId: Int): NetworkCall<BaseResponse<Product>>
 
-    suspend fun getProductDetail(productId: Int): NetworkCall<Product>
+    suspend fun getProductsByCategory(): NetworkCall<BaseResponse<List<ProductsByCategoryItem>>>
+
+    suspend fun getProductsGroupBySubCategory(category: String): NetworkCall<BaseResponse<List<ProductsByCategoryItem>>>
+
+    suspend fun addToFavourite(productId: Int): NetworkCall<BaseResponse<String>>
+
+    suspend fun removeFromFavourite(productId: Int): NetworkCall<BaseResponse<String>>
+
+    suspend fun getUserCart(): NetworkCall<BaseResponse<List<Product>>>
+    suspend fun addToCart(productId: Int, cartQty: Int): NetworkCall<BaseResponse<String>>
+
+    suspend fun removeFromCart(productId: Int): NetworkCall<BaseResponse<String>>
 }

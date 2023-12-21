@@ -12,8 +12,15 @@ import kotlinx.coroutines.flow.asStateFlow
 
 open class BaseViewModel<T> : ViewModel() {
 
+//    internal val _loadingUiState = MutableStateFlow<Boolean>(false)
+//    val loadingUiState: StateFlow<Boolean> = _loadingUiState.asStateFlow()
+//
+//    internal val _errorUiState = MutableStateFlow<String?>(null)
+//    val errorUiState: StateFlow<String?> = _errorUiState.asStateFlow()
+
     internal val _networkUiState = MutableStateFlow<NetworkUiState<T>>(NetworkUiState.Empty)
     val networkUiState: StateFlow<NetworkUiState<T>> = _networkUiState.asStateFlow()
+
 
     suspend fun Flow<NetworkCall<BaseResponse<T>>>.asUiState() {
         this.collect {

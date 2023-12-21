@@ -38,7 +38,6 @@ fun VerificationCodeScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.background)
     ) {
         IconButton(
             modifier = Modifier.padding(start = 10.dp, top = 20.dp),

@@ -49,7 +49,7 @@ fun BottomBar(
     val navStackBackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navStackBackEntry?.destination
     val bottomBarDestination = screens.any { it.route == currentDestination?.route }
-    val shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp)
+    val shape = RoundedCornerShape(topStart = 22.dp, topEnd = 22.dp)
     if (bottomBarDestination) {
         CartWaveSurface(
             color = MaterialTheme.colorScheme.primaryContainer,

@@ -4,50 +4,168 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.qasimnawaz019.cartwave.base.BaseViewModel
 import com.qasimnawaz019.domain.model.Product
-import com.qasimnawaz019.domain.usecase.AddToCartDatabaseUseCase
-import com.qasimnawaz019.domain.usecase.AddToFavouriteDatabaseUseCase
+import com.qasimnawaz019.domain.usecase.AddToCartUseCase
+import com.qasimnawaz019.domain.usecase.AddToFavouriteUseCase
 import com.qasimnawaz019.domain.usecase.ProductUseCase
-import com.qasimnawaz019.domain.usecase.RemoveFavouriteDatabaseUseCase
-import com.qasimnawaz019.domain.usecase.RemoveFromCartDatabaseUseCase
+import com.qasimnawaz019.domain.usecase.RemoveFromCartUseCase
+import com.qasimnawaz019.domain.usecase.RemoveFromFavouriteUseCase
+import com.qasimnawaz019.domain.utils.NetworkCall
+import com.qasimnawaz019.domain.utils.NetworkUiState
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class ProductDetailViewModel(
+    private val productId: Int,
     private val productUseCase: ProductUseCase,
-    private val addToCartDatabaseUseCase: AddToCartDatabaseUseCase,
-    private val removeFromCartDatabaseUseCase: RemoveFromCartDatabaseUseCase,
-    private val addToFavouriteDatabaseUseCase: AddToFavouriteDatabaseUseCase,
-    private val removeFavouriteDatabaseUseCase: RemoveFavouriteDatabaseUseCase
+    private val addToFavouriteUseCase: AddToFavouriteUseCase,
+    private val removeFromFavouriteUseCase: RemoveFromFavouriteUseCase,
+    private val addToCartUseCase: AddToCartUseCase,
+    private val removeFromCartUseCase: RemoveFromCartUseCase
 ) : BaseViewModel<Product>() {
 
-    fun getProductDetail(productId: Int) {
-//        viewModelScope.launch {
-//            _networkUiState.emit(NetworkUiState.Loading)
-//            productUseCase.execute(ProductUseCase.Params(productId)).asUiState()
-//        }
+    init {
+        getProductDetail(productId)
     }
 
-    fun addToCart(product: Product) {
+    private fun getProductDetail(productId: Int) {
         viewModelScope.launch {
-            addToCartDatabaseUseCase.execute(AddToCartDatabaseUseCase.Params(product))
+            _networkUiState.emit(NetworkUiState.Loading)
+            productUseCase.execute(ProductUseCase.Params(productId)).asUiState()
+        }
+    }
+
+    fun addToFavourite(productId: Int) {
+        viewModelScope.launch {
+            addToFavouriteUseCase.execute(AddToFavouriteUseCase.Params(productId)).collectLatest {
+                when (it) {
+                    is NetworkCall.Success -> {
+                        Log.d("HomeScreen", "addToFavourite Success")
+                        _networkUiState.value.let { uiState ->
+                            when (uiState) {
+                                is NetworkUiState.Success -> {
+                                    Log.d(
+                                        "HomeScreen",
+                                        "addToFavourite _networkUiState collectLatest Success"
+                                    )
+                                    _networkUiState.emit(
+                                        NetworkUiState.Success(
+                                            uiState.data.copy(
+                                                isFavourite = true
+                                            )
+                                        )
+                                    )
+                                }
+
+                                else -> {}
+                            }
+                        }
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    fun removeFromFavourite(productId: Int) {
+        viewModelScope.launch {
+            removeFromFavouriteUseCase.execute(RemoveFromFavouriteUseCase.Params(productId))
+                .collectLatest {
+                    when (it) {
+                        is NetworkCall.Success -> {
+                            Log.d("HomeScreen", "removeFromFavourite Success")
+                            _networkUiState.value.let { uiState ->
+                                when (uiState) {
+                                    is NetworkUiState.Success -> {
+                                        Log.d(
+                                            "HomeScreen",
+                                            "removeFromFavourite _networkUiState collectLatest Success"
+                                        )
+                                        _networkUiState.emit(
+                                            NetworkUiState.Success(
+                                                uiState.data.copy(
+                                                    isFavourite = false
+                                                )
+                                            )
+                                        )
+                                    }
+
+                                    else -> {}
+                                }
+                            }
+                        }
+
+                        else -> {}
+                    }
+                }
+        }
+    }
+
+    fun addToCart(productId: Int, cartQty: Int) {
+        viewModelScope.launch {
+            addToCartUseCase.execute(AddToCartUseCase.Params(productId, cartQty))
+                .collectLatest {
+                    when (it) {
+                        is NetworkCall.Success -> {
+                            Log.d("HomeScreen", "removeFromFavourite Success")
+                            _networkUiState.value.let { uiState ->
+                                when (uiState) {
+                                    is NetworkUiState.Success -> {
+                                        Log.d(
+                                            "HomeScreen",
+                                            "removeFromFavourite _networkUiState collectLatest Success"
+                                        )
+                                        _networkUiState.emit(
+                                            NetworkUiState.Success(
+                                                uiState.data.copy(
+                                                    cartQty = cartQty
+                                                )
+                                            )
+                                        )
+                                    }
+
+                                    else -> {}
+                                }
+                            }
+                        }
+
+                        else -> {}
+                    }
+                }
         }
     }
 
     fun removeFromCart(productId: Int) {
         viewModelScope.launch {
-            removeFromCartDatabaseUseCase.execute(RemoveFromCartDatabaseUseCase.Params(productId))
-        }
-    }
+            removeFromCartUseCase.execute(RemoveFromCartUseCase.Params(productId))
+                .collectLatest {
+                    when (it) {
+                        is NetworkCall.Success -> {
+                            Log.d("HomeScreen", "removeFromFavourite Success")
+                            _networkUiState.value.let { uiState ->
+                                when (uiState) {
+                                    is NetworkUiState.Success -> {
+                                        Log.d(
+                                            "HomeScreen",
+                                            "removeFromFavourite _networkUiState collectLatest Success"
+                                        )
+                                        _networkUiState.emit(
+                                            NetworkUiState.Success(
+                                                uiState.data.copy(
+                                                    cartQty = 0
+                                                )
+                                            )
+                                        )
+                                    }
 
-    fun addToFavourite(product: Product) {
-        viewModelScope.launch {
-            Log.d("ProductDetailScr", "addToFavourite: $product")
-            addToFavouriteDatabaseUseCase.execute(AddToFavouriteDatabaseUseCase.Params(product))
-        }
-    }
+                                    else -> {}
+                                }
+                            }
+                        }
 
-    fun removeFavourite(id: Int) {
-        viewModelScope.launch {
-            removeFavouriteDatabaseUseCase.execute(RemoveFavouriteDatabaseUseCase.Params(id))
+                        else -> {}
+                    }
+                }
         }
     }
 }

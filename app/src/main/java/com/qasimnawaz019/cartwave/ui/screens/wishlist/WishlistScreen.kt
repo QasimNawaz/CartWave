@@ -1,68 +1,91 @@
 package com.qasimnawaz019.cartwave.ui.screens.wishlist
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Scaffold
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.qasimnawaz019.cartwave.ui.screens.cart.CartItem
-import com.qasimnawaz019.cartwave.ui.screens.graphs.MainScreenInfo
-import com.qasimnawaz019.cartwave.ui.screens.home.ProductItem
-import com.qasimnawaz019.cartwave.utils.gridItems
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.qasimnawaz019.cartwave.R
+import com.qasimnawaz019.cartwave.ui.components.EmptyView
+import com.qasimnawaz019.cartwave.ui.components.VerticalGridProductsShimmer
+import com.qasimnawaz019.cartwave.ui.screens.home.ProductRowItem
+import com.qasimnawaz019.cartwave.utils.rememberLifecycleEvent
 import com.qasimnawaz019.domain.model.Product
 import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun WishlistScreen(
-    onNavigate: (route: String) -> Unit,
-    viewModel: WishlistScreenViewModel = getViewModel()
+    onNavigate: (route: String) -> Unit, viewModel: WishlistScreenViewModel = getViewModel()
 ) {
 
-    val lazyListState = rememberLazyListState()
+    val lifecycleEvent = rememberLifecycleEvent()
+    val favourites: LazyPagingItems<Product> = viewModel.pagingData.collectAsLazyPagingItems()
+    val reload: Boolean by viewModel.reLoad.collectAsStateWithLifecycle()
 
-    val productsResponse: List<Product> by viewModel.favouriteProducts.collectAsStateWithLifecycle()
-
-    Scaffold(
-        backgroundColor = MaterialTheme.colorScheme.background, modifier = Modifier.fillMaxSize()
-    ) { innerPadding ->
-        LazyVerticalGrid(columns = GridCells.Fixed(2), content = {
-            items(items = productsResponse, key = { it.id!! }) { product ->
-                ProductItem(product = product, onUpdateFavourite = {
-//                    val updatedList = productsResponse.toMutableList()
-//                    updatedList.removeAt(index)
-                    if (product.isFavourite) {
-                        product.id?.let { viewModel.removeFavourite(it) }
-                    }
-                }) {
-                    onNavigate.invoke("${MainScreenInfo.ProductDetail.route}/${product.id}")
-                }
-            }
-        })
-        LazyColumn(
-            state = lazyListState,
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            gridItems(
-                data = productsResponse,
-                columnCount = 2,
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                modifier = Modifier.padding(horizontal = 8.dp)
-            ) { index, product ->
-
+    LaunchedEffect(reload) {
+        if (reload) {
+            favourites.refresh()
+            viewModel.updateReload()
+        }
+    }
+    LaunchedEffect(lifecycleEvent) {
+        if (lifecycleEvent == Lifecycle.Event.ON_RESUME) {
+            if (favourites.itemCount > 0) {
+                favourites.refresh()
             }
         }
     }
 
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        if (favourites.itemCount == 0 && favourites.loadState.refresh != LoadState.Loading) {
+            EmptyView(R.drawable.ic_heart_3d, "Your wishlist is empty")
+        }
+        FavouritesGrid(
+            favourites = favourites, onNavigate = onNavigate
+        ) {
+            viewModel.removeFromFavourite(it)
+        }
+    }
+
+}
+
+@Composable
+fun FavouritesGrid(
+    favourites: LazyPagingItems<Product>,
+    onNavigate: (route: String) -> Unit,
+    onRemoveFavourite: (id: Int) -> Unit
+) {
+    LazyVerticalGrid(state = rememberLazyGridState(),
+        contentPadding = PaddingValues(vertical = 15.dp, horizontal = 10.dp),
+        columns = GridCells.Fixed(2),
+        content = {
+            items(count = favourites.itemCount) { index ->
+                favourites[index]?.let { product ->
+                    ProductRowItem(product = product, onNavigate = onNavigate, onUpdateFavourite = {
+                        if (!it) {
+                            product.id?.let { _id -> onRemoveFavourite.invoke(_id) }
+                        }
+                    })
+                }
+            }
+            if (favourites.loadState.refresh == LoadState.Loading || favourites.loadState.append == LoadState.Loading) {
+                items(2) {
+                    VerticalGridProductsShimmer()
+                }
+            }
+        })
 }

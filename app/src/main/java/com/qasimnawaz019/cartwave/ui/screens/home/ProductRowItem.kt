@@ -1,6 +1,5 @@
 package com.qasimnawaz019.cartwave.ui.screens.home
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,9 +14,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,37 +28,39 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.qasimnawaz019.cartwave.R
-import com.qasimnawaz019.cartwave.ui.components.CartWaveSurface
+import com.qasimnawaz019.cartwave.ui.screens.graphs.MainScreenInfo
 import com.qasimnawaz019.domain.model.Product
 
 @Composable
-fun ProductItem(
-    product: Product, onUpdateFavourite: () -> Unit, onDetailNav: () -> Unit
+fun ProductRowItem(
+    product: Product,
+    onNavigate: (route: String) -> Unit,
+    onUpdateFavourite: (add: Boolean) -> Unit,
 ) {
-
-    CartWaveSurface(
-        color = MaterialTheme.colorScheme.surfaceVariant,
+    Card(
         modifier = Modifier
-            .padding(5.dp)
             .fillMaxWidth()
-            .height(230.dp)
-            .clip(shape = MaterialTheme.shapes.medium)
+            .height(250.dp)
+            .padding(horizontal = 6.dp, vertical = 10.dp)
             .clickable {
-                Log.d("HomeScren", "onDetailNav.invoke()")
-                onDetailNav.invoke()
+                onNavigate.invoke("${MainScreenInfo.ProductDetail.route}/${product.id}")
             },
-        elevation = 2.dp,
+        shape = RoundedCornerShape(10.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
     ) {
         ConstraintLayout(
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize()
         ) {
             val (imageContainer, title, price, ratingContainer) = createRefs()
 
@@ -70,10 +74,10 @@ fun ProductItem(
                     .fillMaxHeight(0.7f)
                     .height(0.dp)
                     .clip(shape = MaterialTheme.shapes.medium),
-                contentAlignment = Alignment.TopEnd
             ) {
                 AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current).data(product.image).build(),
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(product.images?.firstOrNull()).build(),
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop,
                     contentDescription = null,
@@ -81,12 +85,13 @@ fun ProductItem(
                 if (product.isFavourite) {
                     Icon(
                         modifier = Modifier
-                            .padding(15.dp)
-                            .size(30.dp)
+                            .align(Alignment.TopEnd)
+                            .padding(10.dp)
+                            .size(36.dp)
                             .background(Color.DarkGray, shape = CircleShape)
                             .padding(6.dp)
                             .clickable {
-                                onUpdateFavourite.invoke()
+                                onUpdateFavourite.invoke(false)
                             },
                         painter = painterResource(id = R.drawable.ic_heart_filled),
                         contentDescription = null,
@@ -95,19 +100,34 @@ fun ProductItem(
                 } else {
                     Icon(
                         modifier = Modifier
-                            .padding(15.dp)
-                            .size(30.dp)
+                            .align(Alignment.TopEnd)
+                            .padding(10.dp)
+                            .size(36.dp)
                             .background(Color.DarkGray, shape = CircleShape)
                             .padding(6.dp)
                             .clickable {
-                                onUpdateFavourite.invoke()
+                                onUpdateFavourite.invoke(true)
                             },
                         painter = painterResource(id = R.drawable.ic_heart),
                         contentDescription = null,
                         tint = Color.Red
                     )
                 }
+
+                if (!product.discount.isNullOrEmpty()) {
+                    Text(
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(8.dp)
+                            .background(Color.DarkGray, shape = CircleShape)
+                            .padding(horizontal = 12.dp, vertical = 3.dp),
+                        text = product.discount ?: "",
+                        color = Color.White,
+                        fontSize = MaterialTheme.typography.titleSmall.fontSize,
+                    )
+                }
             }
+
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -124,13 +144,22 @@ fun ProductItem(
             )
 
             Text(
+                buildAnnotatedString {
+                    append("$ ")
+                    if (!product.actualPrice.isNullOrEmpty()) {
+                        withStyle(style = SpanStyle(textDecoration = TextDecoration.LineThrough)) {
+                            append(product.actualPrice ?: "")
+                        }
+                    }
+                    append(" ${product.sellingPrice}")
+                },
                 modifier = Modifier.constrainAs(price) {
                     start.linkTo(parent.start, 6.dp)
                     bottom.linkTo(parent.bottom, 4.dp)
                 },
-                text = "$ ${product.price}",
+                color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground
+                fontSize = MaterialTheme.typography.titleSmall.fontSize,
             )
             Row(
                 modifier = Modifier.constrainAs(ratingContainer) {
@@ -146,13 +175,13 @@ fun ProductItem(
                     contentDescription = null,
                     tint = Color.Unspecified
                 )
-                Spacer(modifier = Modifier.width(2.dp))
+                Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = "${product.rating?.rate}",
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
+                    text = "${product.averageRating}",
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+                    fontSize = MaterialTheme.typography.titleSmall.fontSize,
                 )
             }
-
         }
     }
 }

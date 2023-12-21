@@ -1,28 +1,43 @@
 package com.qasimnawaz019.data.repository.dataSourceImpl
 
+import android.util.Log
 import com.qasimnawaz019.data.repository.dataSource.RemoteDataSource
+import com.qasimnawaz019.data.repository.datastore.DataStoreRepository
+import com.qasimnawaz019.data.utils.ADD_TO_CART
+import com.qasimnawaz019.data.utils.ADD_TO_FAVOURITE
+import com.qasimnawaz019.data.utils.GET_PRODUCT
+import com.qasimnawaz019.data.utils.GET_USER_CART
 import com.qasimnawaz019.data.utils.LOGIN
-import com.qasimnawaz019.data.utils.PRODUCTS
+import com.qasimnawaz019.data.utils.PRODUCTS_BY_CATEGORY
+import com.qasimnawaz019.data.utils.PRODUCTS_GROUP_BY_CATEGORY
 import com.qasimnawaz019.data.utils.REGISTER
+import com.qasimnawaz019.data.utils.REMOVE_FROM_CART
+import com.qasimnawaz019.data.utils.REMOVE_FROM_FAVOURITE
 import com.qasimnawaz019.data.utils.safeRequest
+import com.qasimnawaz019.domain.dto.cart.AddToCartRequestDto
+import com.qasimnawaz019.domain.dto.favourite.AddToFavouriteRequestDto
 import com.qasimnawaz019.domain.dto.login.LoginRequestDto
 import com.qasimnawaz019.domain.dto.login.RegisterRequestDto
 import com.qasimnawaz019.domain.model.BaseResponse
 import com.qasimnawaz019.domain.model.Product
+import com.qasimnawaz019.domain.model.ProductsByCategoryItem
 import com.qasimnawaz019.domain.model.User
 import com.qasimnawaz019.domain.utils.NetworkCall
 import com.qasimnawaz019.domain.utils.NetworkConnectivity
 import io.ktor.client.HttpClient
+import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 import io.ktor.client.request.setBody
 import io.ktor.client.request.url
 import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
+import kotlinx.coroutines.flow.first
 
 class RemoteDataSourceImpl(
     private val client: HttpClient,
     private val networkConnectivity: NetworkConnectivity,
+    private val dataStoreRepository: DataStoreRepository
 ) : RemoteDataSource {
     override suspend fun login(requestDto: LoginRequestDto): NetworkCall<BaseResponse<User>> {
         return client.safeRequest(networkConnectivity) {
@@ -42,20 +57,112 @@ class RemoteDataSourceImpl(
         }
     }
 
-    override suspend fun getProducts(limit: Int): NetworkCall<List<Product>> {
+    override suspend fun getProductDetail(productId: Int): NetworkCall<BaseResponse<Product>> {
         return client.safeRequest(networkConnectivity) {
             method = HttpMethod.Get
-            url(PRODUCTS)
-            parameter("limit", limit)
+            url(GET_PRODUCT)
+            header("Authorization", "Bearer ${dataStoreRepository.readAccessToken().first()}")
+            parameter("userId", dataStoreRepository.getUser().first()?.id)
+            parameter("productId", productId)
             contentType(ContentType.Application.Json)
         }
     }
 
-    override suspend fun getProductDetail(productId: Int): NetworkCall<Product> {
+    override suspend fun getProductsByCategory(): NetworkCall<BaseResponse<List<ProductsByCategoryItem>>> {
+        Log.d("RemoteDataSourceImpl", "getProductsByCategory")
         return client.safeRequest(networkConnectivity) {
             method = HttpMethod.Get
-            url("$PRODUCTS/$productId")
+            url(PRODUCTS_BY_CATEGORY)
+            header("Authorization", "Bearer ${dataStoreRepository.readAccessToken().first()}")
+            parameter("userId", dataStoreRepository.getUser().first()?.id)
             contentType(ContentType.Application.Json)
+        }
+    }
+
+    override suspend fun getProductsGroupBySubCategory(category: String): NetworkCall<BaseResponse<List<ProductsByCategoryItem>>> {
+        Log.d("RemoteDataSourceImpl", "getProductsGroupBySubCategory: $category")
+        return client.safeRequest(networkConnectivity) {
+            method = HttpMethod.Get
+            url(PRODUCTS_GROUP_BY_CATEGORY)
+            header("Authorization", "Bearer ${dataStoreRepository.readAccessToken().first()}")
+            parameter("userId", dataStoreRepository.getUser().first()?.id)
+            parameter("category", category)
+            contentType(ContentType.Application.Json)
+        }
+    }
+
+    override suspend fun addToFavourite(productId: Int): NetworkCall<BaseResponse<String>> {
+        return client.safeRequest(networkConnectivity) {
+            method = HttpMethod.Post
+            url(ADD_TO_FAVOURITE)
+            header("Authorization", "Bearer ${dataStoreRepository.readAccessToken().first()}")
+            contentType(ContentType.Application.Json)
+            setBody(
+                AddToFavouriteRequestDto(
+                    dataStoreRepository.getUser().first()?.id ?: 0,
+                    productId
+                )
+            )
+        }
+    }
+
+    override suspend fun removeFromFavourite(productId: Int): NetworkCall<BaseResponse<String>> {
+        return client.safeRequest(networkConnectivity) {
+            method = HttpMethod.Post
+            url(REMOVE_FROM_FAVOURITE)
+            header("Authorization", "Bearer ${dataStoreRepository.readAccessToken().first()}")
+            contentType(ContentType.Application.Json)
+            setBody(
+                AddToFavouriteRequestDto(
+                    dataStoreRepository.getUser().first()?.id ?: 0,
+                    productId
+                )
+            )
+        }
+    }
+
+    override suspend fun getUserCart(): NetworkCall<BaseResponse<List<Product>>> {
+        return client.safeRequest(networkConnectivity) {
+            method = HttpMethod.Get
+            url(GET_USER_CART)
+            header("Authorization", "Bearer ${dataStoreRepository.readAccessToken().first()}")
+            parameter("userId", dataStoreRepository.getUser().first()?.id)
+            contentType(ContentType.Application.Json)
+        }
+    }
+
+    override suspend fun addToCart(
+        productId: Int,
+        cartQty: Int
+    ): NetworkCall<BaseResponse<String>> {
+        return client.safeRequest(networkConnectivity) {
+            method = HttpMethod.Post
+            url(ADD_TO_CART)
+            header("Authorization", "Bearer ${dataStoreRepository.readAccessToken().first()}")
+            contentType(ContentType.Application.Json)
+            setBody(
+                AddToCartRequestDto(
+                    dataStoreRepository.getUser().first()?.id ?: 0,
+                    productId,
+                    cartQty
+                )
+            )
+        }
+    }
+
+    override suspend fun removeFromCart(productId: Int): NetworkCall<BaseResponse<String>> {
+        return client.safeRequest(networkConnectivity) {
+            method = HttpMethod.Post
+            url(REMOVE_FROM_CART)
+            header("Authorization", "Bearer ${dataStoreRepository.readAccessToken().first()}")
+            contentType(ContentType.Application.Json)
+            setBody(
+                AddToCartRequestDto(
+                    dataStoreRepository.getUser().first()?.id ?: 0,
+                    productId,
+                    0
+                )
+            )
         }
     }
 

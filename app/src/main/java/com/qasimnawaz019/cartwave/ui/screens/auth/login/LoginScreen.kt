@@ -1,6 +1,5 @@
 package com.qasimnawaz019.cartwave.ui.screens.auth.login
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -92,7 +91,6 @@ fun LoginScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.background)
             .padding(30.dp),
     ) {
         Spacer(modifier = Modifier.size(20.dp))

@@ -1,6 +1,5 @@
 package com.qasimnawaz019.cartwave.ui.screens.checkout
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -65,8 +64,7 @@ fun CheckOutScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(15.dp)
-            .background(MaterialTheme.colorScheme.background),
+            .padding(15.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         item {

@@ -7,10 +7,9 @@ import com.qasimnawaz019.data.di.cacheModule
 import com.qasimnawaz019.data.di.daosKoinModule
 import com.qasimnawaz019.data.di.dataModule
 import com.qasimnawaz019.data.di.dispatchersModule
-import com.qasimnawaz019.data.di.localModule
 import com.qasimnawaz019.data.di.repositoryModule
-import com.qasimnawaz019.domain.di.useCaseModule
 import com.qasimnawaz019.domain.di.connectivityModule
+import com.qasimnawaz019.domain.di.useCaseModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.GlobalContext.startKoin
@@ -30,7 +29,6 @@ class CartWaveApp : Application() {
                 dataModule,
                 daosKoinModule,
                 repositoryModule,
-                localModule,
                 useCaseModule,
                 viewModelModule
             )

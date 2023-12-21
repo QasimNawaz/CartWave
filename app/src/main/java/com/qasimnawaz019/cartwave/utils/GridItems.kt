@@ -18,7 +18,7 @@ fun <T> LazyListScope.gridItems(
 ) {
     val size = data.count()
     val rows = if (size == 0) 0 else 1 + (size - 1) / columnCount
-    items(rows, key = { it.hashCode() }) { rowIndex ->
+    items(rows) { rowIndex ->
         Row(
             horizontalArrangement = horizontalArrangement,
             modifier = modifier

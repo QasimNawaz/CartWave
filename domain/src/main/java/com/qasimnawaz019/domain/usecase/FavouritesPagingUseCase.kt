@@ -1,18 +1,21 @@
 package com.qasimnawaz019.domain.usecase
 
+import androidx.paging.PagingData
 import com.qasimnawaz019.domain.model.Product
 import com.qasimnawaz019.domain.repository.FavouriteProductsRepo
-import com.qasimnawaz019.domain.usecase.base.SuspendUseCase
+import com.qasimnawaz019.domain.usecase.base.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 
-class GetFavouritesDatabaseUseCase(
+
+class FavouritesPagingUseCase(
     private val favouriteProductsRepo: FavouriteProductsRepo,
     private val ioDispatcher: CoroutineDispatcher,
-) : SuspendUseCase<Unit, @JvmSuppressWildcards Flow<List<Product>>> {
-    override suspend fun execute(params: Unit): Flow<List<Product>> {
-        return favouriteProductsRepo.getFavouriteProducts().flowOn(ioDispatcher)
+) : UseCase<Unit, @JvmSuppressWildcards Flow<PagingData<Product>>> {
+    override fun execute(params: Unit): Flow<PagingData<Product>> {
+        return favouriteProductsRepo.getFavouritesPaging().flowOn(ioDispatcher)
     }
+
 
 }
