@@ -37,13 +37,18 @@ android {
 dependencies {
 
     api(libs.bundles.common)
+
     api(libs.junit)
-    androidTestApi(libs.bundles.testing)
+
+    testApi(libs.mockito.core)
+    testApi(libs.turbine)
+    testApi(libs.truth)
 
     api(libs.bundles.koin)
     testApi(libs.koin.test)
 
     api(libs.bundles.coroutines)
+    testApi(libs.coroutines.test)
 
     api(libs.gson)
     api(libs.bundles.ktor)

@@ -1,4 +1,4 @@
-package com.qasimnawaz019.domain.usecase
+package com.qasimnawaz019.domain.usecase.product
 
 import android.util.Log
 import com.qasimnawaz019.domain.model.BaseResponse

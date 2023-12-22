@@ -1,4 +1,4 @@
-package com.qasimnawaz019.domain.usecase
+package com.qasimnawaz019.domain.usecase.favourite
 
 import com.qasimnawaz019.domain.model.BaseResponse
 import com.qasimnawaz019.domain.repository.FavouriteProductsRepo
@@ -8,14 +8,14 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 
-class AddToFavouriteUseCase(
+class RemoveFromFavouriteUseCase(
     private val favouriteProductsRepo: FavouriteProductsRepo,
     private val ioDispatcher: CoroutineDispatcher,
-) : SuspendUseCase<AddToFavouriteUseCase.Params, @JvmSuppressWildcards Flow<NetworkCall<BaseResponse<String>>>> {
+) : SuspendUseCase<RemoveFromFavouriteUseCase.Params, @JvmSuppressWildcards Flow<NetworkCall<BaseResponse<String>>>> {
     data class Params(val productId: Int)
 
     override suspend fun execute(params: Params): Flow<NetworkCall<BaseResponse<String>>> {
-        return favouriteProductsRepo.addToFavourite(params.productId).flowOn(ioDispatcher)
+        return favouriteProductsRepo.removeFromFavourite(params.productId).flowOn(ioDispatcher)
     }
 
 

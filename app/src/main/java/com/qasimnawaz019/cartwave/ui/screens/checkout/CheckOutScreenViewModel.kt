@@ -3,7 +3,7 @@ package com.qasimnawaz019.cartwave.ui.screens.checkout
 import androidx.lifecycle.viewModelScope
 import com.qasimnawaz019.cartwave.base.BaseViewModel
 import com.qasimnawaz019.domain.model.Product
-import com.qasimnawaz019.domain.usecase.GetUserCartUseCase
+import com.qasimnawaz019.domain.usecase.cart.GetUserCartUseCase
 import com.qasimnawaz019.domain.utils.NetworkCall
 import com.qasimnawaz019.domain.utils.NetworkUiState
 import kotlinx.coroutines.flow.MutableStateFlow

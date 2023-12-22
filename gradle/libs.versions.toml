@@ -19,6 +19,9 @@ compose-navigation = "2.7.5"
 buildConfig = "3.1.0"
 junit = "4.13.2"
 junit-ext = "1.1.5"
+mockito = "5.8.0"
+turbine = "1.0.0"
+truth = "1.2.0"
 espresso-core = "3.5.1"
 accompanist = "0.31.1-alpha"
 koin = "3.4.0"
@@ -60,7 +63,14 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 # Testing
 junit = { module = "junit:junit", version.ref = "junit" }
 junit-ext = { module = "androidx.test.ext:junit", version.ref = "junit-ext" }
+junit-ext-ktx = { module = "androidx.test.ext:junit-ktx", version.ref = "junit-ext" }
 espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso-core" }
+compose-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "compose-version" }
+compose-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose-version" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+mockito-android = { module = "org.mockito:mockito-android", version.ref = "mockito" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine"}
+truth = { module = "com.google.truth:truth", version.ref = "truth"}
 
 # Compose
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
@@ -77,9 +87,6 @@ compose-material3-windowSizeClass = { module = "androidx.compose.material3:mater
 compose-graphics = { module = "androidx.compose.ui:ui-graphics" }
 compose-runtime = { module = "androidx.compose.runtime:runtime" }
 compose-liverdata = { module = "androidx.compose.runtime:runtime-livedata" }
-# UI Tests
-compose-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "compose-version" }
-compose-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose-version" }
 
 androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "androidxLifecycle" }
 androidx-lifecycle-runtimeCompose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidxLifecycle" }
@@ -129,6 +136,7 @@ room-paging = { module = "androidx.room:room-paging", version.ref = "room-databa
 # Coroutines
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
+coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 
 # Retrofit
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
@@ -163,9 +171,13 @@ common = [
     "lifecycle-runtime-ktx",
     "material"
 ]
-testing = [
+ui-testing = [
     "junit-ext",
-    "espresso-core"
+    "junit-ext-ktx",
+    "espresso-core",
+    "compose-junit4",
+    "compose-test-manifest",
+    "mockito-android"
 ]
 compose-common-impl = [
     "compose-constraintlayout",
@@ -218,7 +230,7 @@ room = [
 ]
 coroutines = [
     "coroutines-core",
-    "coroutines-android"
+    "coroutines-android",
 ]
 retrofit = [
     "retrofit",

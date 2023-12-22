@@ -37,6 +37,7 @@ class LoginScreenViewModel(
     fun performLogin(loginRequestDto: LoginRequestDto) {
         viewModelScope.launch {
             _networkUiState.emit(NetworkUiState.Loading)
+            useCase.execute(LoginUseCase.Params(loginRequestDto))
             useCase.execute(LoginUseCase.Params(loginRequestDto)).asUiState()
         }
     }

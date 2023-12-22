@@ -58,14 +58,13 @@ dependencies {
     implementation(libs.bundles.common)
     implementation(libs.androidx.core.splashscreen)
     testImplementation(libs.junit)
-    androidTestImplementation(libs.bundles.testing)
+    androidTestImplementation(libs.bundles.ui.testing)
 
     implementation(platform(libs.compose.bom))
     androidTestImplementation(platform(libs.compose.bom))
 
     implementation(libs.bundles.compose.common.impl)
     debugImplementation(libs.bundles.compose.common.debug.impl)
-    androidTestImplementation(libs.compose.junit4)
 
     implementation(libs.bundles.accompanist)
 

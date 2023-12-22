@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.qasimnawaz019.domain.model.Product
-import com.qasimnawaz019.domain.usecase.FavouritesPagingUseCase
-import com.qasimnawaz019.domain.usecase.RemoveFromFavouriteUseCase
+import com.qasimnawaz019.domain.usecase.favourite.FavouritesPagingUseCase
+import com.qasimnawaz019.domain.usecase.favourite.RemoveFromFavouriteUseCase
 import com.qasimnawaz019.domain.utils.NetworkCall
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

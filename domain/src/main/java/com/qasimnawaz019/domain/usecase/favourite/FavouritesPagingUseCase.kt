@@ -1,4 +1,4 @@
-package com.qasimnawaz019.domain.usecase
+package com.qasimnawaz019.domain.usecase.favourite
 
 import androidx.paging.PagingData
 import com.qasimnawaz019.domain.model.Product

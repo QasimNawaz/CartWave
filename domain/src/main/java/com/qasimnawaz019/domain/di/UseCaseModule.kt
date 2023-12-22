@@ -1,14 +1,14 @@
 package com.qasimnawaz019.domain.di
 
-import com.qasimnawaz019.domain.usecase.AddToCartUseCase
-import com.qasimnawaz019.domain.usecase.AddToFavouriteUseCase
-import com.qasimnawaz019.domain.usecase.FavouritesPagingUseCase
-import com.qasimnawaz019.domain.usecase.GetUserCartUseCase
-import com.qasimnawaz019.domain.usecase.ProductUseCase
-import com.qasimnawaz019.domain.usecase.ProductsByCategoryUseCase
-import com.qasimnawaz019.domain.usecase.ProductsGroupBySubCategoryUseCase
-import com.qasimnawaz019.domain.usecase.RemoveFromCartUseCase
-import com.qasimnawaz019.domain.usecase.RemoveFromFavouriteUseCase
+import com.qasimnawaz019.domain.usecase.cart.AddToCartUseCase
+import com.qasimnawaz019.domain.usecase.favourite.AddToFavouriteUseCase
+import com.qasimnawaz019.domain.usecase.favourite.FavouritesPagingUseCase
+import com.qasimnawaz019.domain.usecase.cart.GetUserCartUseCase
+import com.qasimnawaz019.domain.usecase.product.ProductDetailUseCase
+import com.qasimnawaz019.domain.usecase.product.ProductsByCategoryUseCase
+import com.qasimnawaz019.domain.usecase.product.ProductsGroupBySubCategoryUseCase
+import com.qasimnawaz019.domain.usecase.cart.RemoveFromCartUseCase
+import com.qasimnawaz019.domain.usecase.favourite.RemoveFromFavouriteUseCase
 import com.qasimnawaz019.domain.usecase.auth.LoginUseCase
 import com.qasimnawaz019.domain.usecase.auth.RegisterUseCase
 import org.koin.dsl.module
@@ -18,7 +18,7 @@ val useCaseModule = module {
     single { RegisterUseCase(get(), get()) }
     single { ProductsByCategoryUseCase(get(), get()) }
     single { ProductsGroupBySubCategoryUseCase(get(), get()) }
-    single { ProductUseCase(get(), get()) }
+    single { ProductDetailUseCase(get(), get()) }
     single { AddToFavouriteUseCase(get(), get()) }
     single { FavouritesPagingUseCase(get(), get()) }
     single { RemoveFromFavouriteUseCase(get(), get()) }

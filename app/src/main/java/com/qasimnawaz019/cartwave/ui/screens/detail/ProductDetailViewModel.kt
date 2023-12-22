@@ -4,11 +4,11 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.qasimnawaz019.cartwave.base.BaseViewModel
 import com.qasimnawaz019.domain.model.Product
-import com.qasimnawaz019.domain.usecase.AddToCartUseCase
-import com.qasimnawaz019.domain.usecase.AddToFavouriteUseCase
-import com.qasimnawaz019.domain.usecase.ProductUseCase
-import com.qasimnawaz019.domain.usecase.RemoveFromCartUseCase
-import com.qasimnawaz019.domain.usecase.RemoveFromFavouriteUseCase
+import com.qasimnawaz019.domain.usecase.cart.AddToCartUseCase
+import com.qasimnawaz019.domain.usecase.cart.RemoveFromCartUseCase
+import com.qasimnawaz019.domain.usecase.favourite.AddToFavouriteUseCase
+import com.qasimnawaz019.domain.usecase.favourite.RemoveFromFavouriteUseCase
+import com.qasimnawaz019.domain.usecase.product.ProductDetailUseCase
 import com.qasimnawaz019.domain.utils.NetworkCall
 import com.qasimnawaz019.domain.utils.NetworkUiState
 import kotlinx.coroutines.flow.collectLatest
@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 
 class ProductDetailViewModel(
     private val productId: Int,
-    private val productUseCase: ProductUseCase,
+    private val productDetailUseCase: ProductDetailUseCase,
     private val addToFavouriteUseCase: AddToFavouriteUseCase,
     private val removeFromFavouriteUseCase: RemoveFromFavouriteUseCase,
     private val addToCartUseCase: AddToCartUseCase,
@@ -30,7 +30,7 @@ class ProductDetailViewModel(
     private fun getProductDetail(productId: Int) {
         viewModelScope.launch {
             _networkUiState.emit(NetworkUiState.Loading)
-            productUseCase.execute(ProductUseCase.Params(productId)).asUiState()
+            productDetailUseCase.execute(ProductDetailUseCase.Params(productId)).asUiState()
         }
     }
 

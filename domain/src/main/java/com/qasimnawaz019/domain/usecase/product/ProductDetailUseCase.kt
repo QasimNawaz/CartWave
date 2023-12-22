@@ -1,4 +1,4 @@
-package com.qasimnawaz019.domain.usecase
+package com.qasimnawaz019.domain.usecase.product
 
 import com.qasimnawaz019.domain.model.BaseResponse
 import com.qasimnawaz019.domain.model.Product
@@ -9,10 +9,10 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 
-class ProductUseCase(
+class ProductDetailUseCase(
     private val productsRepository: ProductsRepo,
     private val ioDispatcher: CoroutineDispatcher,
-) : SuspendUseCase<ProductUseCase.Params, @JvmSuppressWildcards Flow<NetworkCall<BaseResponse<Product>>>> {
+) : SuspendUseCase<ProductDetailUseCase.Params, @JvmSuppressWildcards Flow<NetworkCall<BaseResponse<Product>>>> {
 
     data class Params(val productId: Int)
 

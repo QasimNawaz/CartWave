@@ -4,9 +4,9 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.viewModelScope
 import com.qasimnawaz019.cartwave.base.BaseViewModel
 import com.qasimnawaz019.domain.model.Product
-import com.qasimnawaz019.domain.usecase.AddToCartUseCase
-import com.qasimnawaz019.domain.usecase.GetUserCartUseCase
-import com.qasimnawaz019.domain.usecase.RemoveFromCartUseCase
+import com.qasimnawaz019.domain.usecase.cart.AddToCartUseCase
+import com.qasimnawaz019.domain.usecase.cart.GetUserCartUseCase
+import com.qasimnawaz019.domain.usecase.cart.RemoveFromCartUseCase
 import com.qasimnawaz019.domain.utils.NetworkCall
 import com.qasimnawaz019.domain.utils.NetworkUiState
 import kotlinx.coroutines.flow.MutableStateFlow

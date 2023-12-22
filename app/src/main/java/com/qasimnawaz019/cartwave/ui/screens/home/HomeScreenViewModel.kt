@@ -4,10 +4,10 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.qasimnawaz019.cartwave.base.BaseViewModel
 import com.qasimnawaz019.domain.model.ProductsByCategoryItem
-import com.qasimnawaz019.domain.usecase.AddToFavouriteUseCase
-import com.qasimnawaz019.domain.usecase.ProductsByCategoryUseCase
-import com.qasimnawaz019.domain.usecase.ProductsGroupBySubCategoryUseCase
-import com.qasimnawaz019.domain.usecase.RemoveFromFavouriteUseCase
+import com.qasimnawaz019.domain.usecase.favourite.AddToFavouriteUseCase
+import com.qasimnawaz019.domain.usecase.product.ProductsByCategoryUseCase
+import com.qasimnawaz019.domain.usecase.product.ProductsGroupBySubCategoryUseCase
+import com.qasimnawaz019.domain.usecase.favourite.RemoveFromFavouriteUseCase
 import com.qasimnawaz019.domain.utils.NetworkCall
 import com.qasimnawaz019.domain.utils.NetworkUiState
 import kotlinx.coroutines.flow.collectLatest
