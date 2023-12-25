@@ -42,7 +42,7 @@ class RegisterUseCaseTest {
     }
 
     @Test
-    fun `registerUseCase emits Success on successful registration`() = runTest {
+    fun `registerUseCase emits Success on successful register`() = runTest {
         val user = Mockito.mock(User::class.java)
         val registerRequestDto = Mockito.mock(RegisterRequestDto::class.java)
         val networkCall =
@@ -59,7 +59,7 @@ class RegisterUseCaseTest {
     }
 
     @Test
-    fun `registerUseCase emits Error on failed registration`() = runTest {
+    fun `registerUseCase emits Error on failed register`() = runTest {
         val registerRequestDto = Mockito.mock(RegisterRequestDto::class.java)
         val networkCall =
             NetworkCall.Success(BaseResponse<User>(false, null, "Given email is already registered"))
