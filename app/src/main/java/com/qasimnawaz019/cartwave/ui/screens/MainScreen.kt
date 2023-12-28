@@ -43,7 +43,7 @@ fun MainScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = R.drawable.my_profile,
+                model = R.drawable.ic_arrow_left,
                 contentDescription = null,
                 modifier = Modifier
                     .size(35.dp)

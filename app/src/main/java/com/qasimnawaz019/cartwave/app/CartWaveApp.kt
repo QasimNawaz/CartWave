@@ -4,7 +4,6 @@ import android.app.Application
 import com.qasimnawaz019.cartwave.di.viewModelModule
 import com.qasimnawaz019.data.di.appModule
 import com.qasimnawaz019.data.di.cacheModule
-import com.qasimnawaz019.data.di.daosKoinModule
 import com.qasimnawaz019.data.di.dataModule
 import com.qasimnawaz019.data.di.dispatchersModule
 import com.qasimnawaz019.data.di.repositoryModule
@@ -27,7 +26,6 @@ class CartWaveApp : Application() {
                 dispatchersModule,
                 connectivityModule,
                 dataModule,
-                daosKoinModule,
                 repositoryModule,
                 useCaseModule,
                 viewModelModule

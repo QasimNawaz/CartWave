@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.com.android.library)
     alias(libs.plugins.org.jetbrains.kotlin.android)
     id("kotlinx-serialization")
-    alias(libs.plugins.ksp)
+//    alias(libs.plugins.ksp)
 }
 
 fun getLocalProperty(propertyName: String): String {
@@ -21,7 +21,6 @@ android {
 
     defaultConfig {
         minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.targetSdk.get().toInt()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -29,8 +28,14 @@ android {
     buildTypes {
         debug {
             buildConfigField("String", "BASE_URL", "\"${getLocalProperty("baseUrl")}\"")
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
         release {
+            buildConfigField("String", "BASE_URL", "\"${getLocalProperty("baseUrl")}\"")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -42,11 +47,11 @@ android {
         buildConfig = true
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "1.8"
     }
 
 }
@@ -75,6 +80,6 @@ dependencies {
 
     api(libs.bundles.dataStore)
 
-    api(libs.bundles.room)
-    ksp(libs.room.compiler)
+//    api(libs.bundles.room)
+//    ksp(libs.room.compiler)
 }
