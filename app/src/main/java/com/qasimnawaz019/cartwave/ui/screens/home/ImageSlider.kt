@@ -18,6 +18,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.qasimnawaz019.cartwave.R
 import com.qasimnawaz019.cartwave.ui.screens.onboarding.PageIndicator
+import kotlinx.coroutines.delay
 
 @OptIn(
     ExperimentalFoundationApi::class
@@ -37,7 +39,13 @@ fun ImageSlider() {
     val pages = listOf(
         ImageSliderPage.First, ImageSliderPage.Second, ImageSliderPage.Third
     )
-    val pagerState = rememberPagerState { 3 }
+    val pagerState = rememberPagerState { pages.size }
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(2000)
+            pagerState.animateScrollToPage((pagerState.currentPage + 1) % pages.size)
+        }
+    }
     Box(
         Modifier
             .fillMaxWidth()

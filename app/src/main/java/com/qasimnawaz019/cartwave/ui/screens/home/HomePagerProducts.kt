@@ -160,30 +160,7 @@ fun HomePagerProducts(
                                 }
                             }
                         })
-//                        ProductItem(product = product, onUpdateFavourite = {
-//                            products[index] = product.copy(isFavourite = product.isFavourite.not())
-//                            if (product.isFavourite) {
-//                                product.id?.let { viewModel.removeFavourite(it) }
-//                            } else {
-//                                viewModel.addToFavourite(products[index])
-//                            }
-//                            viewModel.reloadProducts(products.toList())
-//                        }) {
-//                            onNavigate.invoke("${MainScreenInfo.ProductDetail.route}/${product.id}")
-//                        }
                 }
-
-//                    items(products) { product ->
-//                        ProductRowItem(product = product, onUpdateFavourite = { add ->
-//                            product.id?.let { _id ->
-//                                if (add) {
-//                                    viewModel.addToFavourite(_id)
-//                                } else {
-//                                    viewModel.removeFromFavourite(_id)
-//                                }
-//                            }
-//                        })
-//                    }
             }
         }
     }

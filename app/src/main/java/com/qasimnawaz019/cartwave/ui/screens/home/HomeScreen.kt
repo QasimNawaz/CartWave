@@ -80,15 +80,17 @@ fun CategoriesRow(pages: List<CategoryPage>, pagerState: PagerState) {
                     color = if (pagerState.settledPage == index) MaterialTheme.colorScheme.onErrorContainer else MaterialTheme.colorScheme.primary
                 ),
                 modifier = Modifier
-                    .size(50.dp),
+                    .size(50.dp)
+                    .clickable {
+                        coroutineScope.launch { pagerState.animateScrollToPage(index) }
+                    },
                 shape = CircleShape,
                 elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
             ) {
                 Icon(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(10.dp)
-                        .clickable { coroutineScope.launch { pagerState.animateScrollToPage(index) } },
+                        .padding(10.dp),
                     painter = painterResource(id = categoryPage.image),
                     contentDescription = "icon",
                     tint = MaterialTheme.colorScheme.primaryContainer,
