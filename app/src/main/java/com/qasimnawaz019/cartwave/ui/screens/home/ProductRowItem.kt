@@ -37,6 +37,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.qasimnawaz019.cartwave.R
 import com.qasimnawaz019.cartwave.ui.screens.graphs.MainScreenInfo
@@ -77,7 +78,8 @@ fun ProductRowItem(
             ) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(product.images?.firstOrNull()).build(),
+                        .data(product.images.firstOrNull()).diskCachePolicy(CachePolicy.ENABLED)
+                        .memoryCachePolicy(CachePolicy.ENABLED).build(),
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop,
                     contentDescription = null,

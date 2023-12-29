@@ -46,6 +46,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.qasimnawaz019.cartwave.R
 import com.qasimnawaz019.cartwave.ui.components.AlertMessageDialog
 import com.qasimnawaz019.cartwave.ui.components.CartWaveLabelledCheckBox
@@ -171,7 +173,10 @@ fun RegisterScreen(
                 contentAlignment = Alignment.Center
             ) {
                 AsyncImage(
-                    model = if (imageUri != null) imageUri else R.drawable.ic_person_circle,
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .diskCachePolicy(CachePolicy.ENABLED)
+                        .memoryCachePolicy(CachePolicy.ENABLED)
+                        .data(if (imageUri != null) imageUri else R.drawable.ic_person_circle).build(),
                     contentDescription = null,
                     modifier = Modifier
                         .size(100.dp)

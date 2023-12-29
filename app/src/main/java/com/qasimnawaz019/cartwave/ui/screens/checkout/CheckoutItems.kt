@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.qasimnawaz019.cartwave.ui.components.CartWaveSurface
 import com.qasimnawaz019.domain.model.Product
@@ -71,6 +72,8 @@ fun CheckoutItem(product: Product) {
                         start.linkTo(parent.start)
                     },
                 model = ImageRequest.Builder(LocalContext.current)
+                    .diskCachePolicy(CachePolicy.ENABLED)
+                    .memoryCachePolicy(CachePolicy.ENABLED)
                     .data(product.images.firstOrNull()).build(),
                 contentScale = ContentScale.Crop,
                 contentDescription = null,

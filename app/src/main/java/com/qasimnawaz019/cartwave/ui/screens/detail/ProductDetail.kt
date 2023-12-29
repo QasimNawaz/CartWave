@@ -44,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -54,6 +55,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.qasimnawaz019.cartwave.R
 import com.qasimnawaz019.cartwave.ui.components.CartWaveSurface
 import com.qasimnawaz019.cartwave.ui.components.ProductDetailShimmer
@@ -390,7 +393,10 @@ fun ProductImages(modifier: Modifier, images: List<String>, onDismiss: () -> Uni
             state = pagerState,
         ) { position ->
             AsyncImage(
-                model = images[position],
+                model = ImageRequest.Builder(LocalContext.current)
+                    .diskCachePolicy(CachePolicy.ENABLED)
+                    .memoryCachePolicy(CachePolicy.ENABLED)
+                    .data(images[position]).build(),
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .fillMaxSize(),
@@ -443,7 +449,10 @@ fun ProductImages(modifier: Modifier, images: List<String>, onDismiss: () -> Uni
                         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                     ) {
                         AsyncImage(
-                            model = s,
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .diskCachePolicy(CachePolicy.ENABLED)
+                                .memoryCachePolicy(CachePolicy.ENABLED)
+                                .data(s).build(),
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Fit,
                             contentDescription = null,

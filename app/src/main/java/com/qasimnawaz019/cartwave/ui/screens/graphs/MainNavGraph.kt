@@ -5,7 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.qasimnawaz019.cartwave.ui.screens.MainScreen
+import com.qasimnawaz019.cartwave.ui.screens.main.MainScreen
 import com.qasimnawaz019.cartwave.ui.screens.checkout.CheckOutScreen
 import com.qasimnawaz019.cartwave.ui.screens.detail.ProductDetail
 import com.qasimnawaz019.cartwave.utils.composableScaleTransition

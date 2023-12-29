@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.qasimnawaz019.cartwave.R
 import com.qasimnawaz019.cartwave.ui.components.CartWaveSurface
@@ -61,6 +62,8 @@ fun CartItem(product: Product, onCartQtyUpdate: (cartQty: Int) -> Unit) {
                         start.linkTo(parent.start)
                     },
                 model = ImageRequest.Builder(LocalContext.current)
+                    .diskCachePolicy(CachePolicy.ENABLED)
+                    .memoryCachePolicy(CachePolicy.ENABLED)
                     .data(product.images.firstOrNull()).build(),
                 contentScale = ContentScale.Crop,
                 contentDescription = null,

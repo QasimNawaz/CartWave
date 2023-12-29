@@ -22,11 +22,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.qasimnawaz019.cartwave.R
 import com.qasimnawaz019.cartwave.ui.screens.onboarding.PageIndicator
 import kotlinx.coroutines.delay
@@ -97,7 +100,10 @@ fun ImageSlider() {
                             .height(160.dp)
                             .width(150.dp)
                             .padding(end = 10.dp, bottom = 10.dp),
-                        model = pages[position].image,
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .diskCachePolicy(CachePolicy.ENABLED)
+                            .memoryCachePolicy(CachePolicy.ENABLED)
+                            .data(pages[position].image).build(),
                         contentDescription = null,
                         contentScale = ContentScale.Fit
                     )
