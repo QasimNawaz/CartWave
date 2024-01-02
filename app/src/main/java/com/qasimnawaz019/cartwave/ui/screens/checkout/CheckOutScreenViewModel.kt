@@ -2,7 +2,9 @@ package com.qasimnawaz019.cartwave.ui.screens.checkout
 
 import androidx.lifecycle.viewModelScope
 import com.qasimnawaz019.cartwave.base.BaseViewModel
+import com.qasimnawaz019.domain.model.Address
 import com.qasimnawaz019.domain.model.Product
+import com.qasimnawaz019.domain.usecase.address.GetPrimaryAddressUseCase
 import com.qasimnawaz019.domain.usecase.cart.GetUserCartUseCase
 import com.qasimnawaz019.domain.utils.NetworkCall
 import com.qasimnawaz019.domain.utils.NetworkUiState
@@ -13,43 +15,55 @@ import kotlinx.coroutines.launch
 
 class CheckOutScreenViewModel(
     private val getUserCartUseCase: GetUserCartUseCase,
-) : BaseViewModel<List<Product>>() {
+    private val getPrimaryAddressUseCase: GetPrimaryAddressUseCase
+) : BaseViewModel<Address>() {
 
     private val _totalAmount = MutableStateFlow<Int>(0)
     val totalAmount: StateFlow<Int> = _totalAmount.asStateFlow()
 
+    private val _userCartUiState =
+        MutableStateFlow<NetworkUiState<List<Product>>>(NetworkUiState.Empty)
+    val userCartUiState: StateFlow<NetworkUiState<List<Product>>> = _userCartUiState.asStateFlow()
+
     init {
         getUserCart()
+        getPrimaryAddress()
+    }
+
+    fun getPrimaryAddress() {
+        viewModelScope.launch {
+            _networkUiState.emit(NetworkUiState.Loading)
+            getPrimaryAddressUseCase.execute(Unit).asUiState()
+        }
     }
 
     private fun getUserCart() {
         viewModelScope.launch {
+            _userCartUiState.emit(NetworkUiState.Loading)
             getUserCartUseCase.execute(Unit).collect { networkCall ->
                 when (networkCall) {
                     is NetworkCall.Error.NoNetwork -> {
-                        _networkUiState.emit(
+                        _userCartUiState.emit(
                             NetworkUiState.Error(
-                                code = 12029,
-                                error = "${networkCall.cause.message}"
+                                code = 12029, error = "${networkCall.cause.message}"
                             )
                         )
                     }
 
                     is NetworkCall.Error.HttpError -> {
-                        _networkUiState.emit(
+                        _userCartUiState.emit(
                             NetworkUiState.Error(
-                                code = networkCall.code,
-                                error = "${networkCall.message}"
+                                code = networkCall.code, error = "${networkCall.message}"
                             )
                         )
                     }
 
                     is NetworkCall.Error.SerializationError -> {
-                        _networkUiState.emit(NetworkUiState.Error(error = "${networkCall.message}"))
+                        _userCartUiState.emit(NetworkUiState.Error(error = "${networkCall.message}"))
                     }
 
                     is NetworkCall.Error.GenericError -> {
-                        _networkUiState.emit(NetworkUiState.Error(error = "${networkCall.message}"))
+                        _userCartUiState.emit(NetworkUiState.Error(error = "${networkCall.message}"))
                     }
 
                     is NetworkCall.Success -> {
@@ -59,10 +73,10 @@ class CheckOutScreenViewModel(
                                     (it.sellingPrice?.replace(",", "")?.toIntOrNull()
                                         ?: 0) * it.cartQty
                                 } + 9)
-                                _networkUiState.emit(NetworkUiState.Success(carts))
+                                _userCartUiState.emit(NetworkUiState.Success(carts))
                             }
                         } else {
-                            _networkUiState.emit(NetworkUiState.Error(error = networkCall.data.message))
+                            _userCartUiState.emit(NetworkUiState.Error(error = networkCall.data.message))
                         }
                     }
                 }

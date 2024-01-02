@@ -1,6 +1,7 @@
 package com.qasimnawaz019.cartwave.di
 
 import com.qasimnawaz019.cartwave.ui.screens.MainActivityViewModel
+import com.qasimnawaz019.cartwave.ui.screens.address.AddressScreenViewModel
 import com.qasimnawaz019.cartwave.ui.screens.auth.login.LoginScreenViewModel
 import com.qasimnawaz019.cartwave.ui.screens.auth.register.RegisterScreenViewModel
 import com.qasimnawaz019.cartwave.ui.screens.cart.CartScreenViewModel
@@ -25,5 +26,6 @@ val viewModelModule = module {
     viewModel { ProductDetailViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { WishlistScreenViewModel(get(), get()) }
     viewModel { CartScreenViewModel(get(), get(), get()) }
-    viewModel { CheckOutScreenViewModel(get()) }
+    viewModel { CheckOutScreenViewModel(get(), get()) }
+    viewModel { AddressScreenViewModel(get(), get(), get()) }
 }

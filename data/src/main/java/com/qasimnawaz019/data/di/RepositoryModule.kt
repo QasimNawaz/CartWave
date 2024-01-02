@@ -1,9 +1,11 @@
 package com.qasimnawaz019.data.di
 
+import com.qasimnawaz019.data.repository.repoImpl.AddressRepoImpl
 import com.qasimnawaz019.data.repository.repoImpl.AuthRepoImpl
 import com.qasimnawaz019.data.repository.repoImpl.FavouriteProductsRepoImpl
 import com.qasimnawaz019.data.repository.repoImpl.ProductsRepoImpl
 import com.qasimnawaz019.data.repository.repoImpl.UserCartRepoImpl
+import com.qasimnawaz019.domain.repository.AddressRepo
 import com.qasimnawaz019.domain.repository.AuthRepo
 import com.qasimnawaz019.domain.repository.FavouriteProductsRepo
 import com.qasimnawaz019.domain.repository.ProductsRepo
@@ -21,4 +23,5 @@ val repositoryModule = module {
     single<ProductsRepo> { ProductsRepoImpl(get(), get()) }
     single<FavouriteProductsRepo> { FavouriteProductsRepoImpl(get(), get(), get()) }
     single<UserCartRepo> { UserCartRepoImpl(get(), get()) }
+    single<AddressRepo> { AddressRepoImpl(get(), get()) }
 }

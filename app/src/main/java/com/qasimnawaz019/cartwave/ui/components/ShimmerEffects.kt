@@ -6,6 +6,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,7 +16,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -276,3 +279,178 @@ fun BoxScope.ProductDetailShimmer() {
 
 
 }
+
+@Composable
+fun AddressItemShimmer() {
+    val gradient = listOf(
+        Color.LightGray.copy(alpha = 0.9f), //darker grey (90% opacity)
+        Color.LightGray.copy(alpha = 0.3f), //lighter grey (30% opacity)
+        Color.LightGray.copy(alpha = 0.9f)
+    )
+
+    val transition = rememberInfiniteTransition() // animate infinite times
+
+    val translateAnimation = transition.animateFloat( //animate the transition
+        initialValue = 0f,
+        targetValue = 1000f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(
+                durationMillis = 1000, // duration for the animation
+                easing = FastOutLinearInEasing
+            )
+        )
+    )
+    val brush = Brush.linearGradient(
+        colors = gradient,
+        start = Offset(200f, 200f),
+        end = Offset(
+            x = translateAnimation.value,
+            y = translateAnimation.value
+        )
+    )
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(
+                width = 1.dp,
+                color = Color.Gray.copy(
+                    alpha = 0.5f
+                ),
+                shape = RoundedCornerShape(10.dp)
+            )
+            .clip(shape = RoundedCornerShape(10.dp))
+            .padding(vertical = 12.dp, horizontal = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Spacer(
+            modifier = Modifier
+                .size(50.dp)
+                .clip(shape = CircleShape)
+                .background(brush),
+        )
+        Spacer(modifier = Modifier.width(10.dp))
+        Spacer(
+            modifier = Modifier
+                .weight(1f)
+                .height(20.dp)
+                .background(brush),
+        )
+    }
+}
+
+@Composable
+fun AddressShimmer() {
+    val gradient = listOf(
+        Color.LightGray.copy(alpha = 0.9f), //darker grey (90% opacity)
+        Color.LightGray.copy(alpha = 0.3f), //lighter grey (30% opacity)
+        Color.LightGray.copy(alpha = 0.9f)
+    )
+
+    val transition = rememberInfiniteTransition() // animate infinite times
+
+    val translateAnimation = transition.animateFloat( //animate the transition
+        initialValue = 0f,
+        targetValue = 1000f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(
+                durationMillis = 1000, // duration for the animation
+                easing = FastOutLinearInEasing
+            )
+        )
+    )
+    val brush = Brush.linearGradient(
+        colors = gradient,
+        start = Offset(200f, 200f),
+        end = Offset(
+            x = translateAnimation.value,
+            y = translateAnimation.value
+        )
+    )
+
+    Row(
+        modifier = Modifier
+            .padding(top = 12.dp)
+            .fillMaxWidth()
+            .border(
+                width = 1.dp,
+                color = Color.Gray.copy(
+                    alpha = 0.5f
+                ),
+                shape = RoundedCornerShape(10.dp)
+            )
+            .clip(shape = RoundedCornerShape(10.dp))
+            .padding(vertical = 12.dp, horizontal = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Spacer(
+            modifier = Modifier
+                .width(100.dp)
+                .height(75.dp)
+                .clip(shape = MaterialTheme.shapes.medium)
+                .background(brush),
+        )
+        Spacer(modifier = Modifier.width(10.dp))
+        Spacer(
+            modifier = Modifier
+                .weight(1f)
+                .height(20.dp)
+                .background(brush),
+        )
+    }
+}
+
+@Composable
+fun CartItemShimmer() {
+    val gradient = listOf(
+        Color.LightGray.copy(alpha = 0.9f), //darker grey (90% opacity)
+        Color.LightGray.copy(alpha = 0.3f), //lighter grey (30% opacity)
+        Color.LightGray.copy(alpha = 0.9f)
+    )
+
+    val transition = rememberInfiniteTransition() // animate infinite times
+
+    val translateAnimation = transition.animateFloat( //animate the transition
+        initialValue = 0f,
+        targetValue = 1000f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(
+                durationMillis = 1000, // duration for the animation
+                easing = FastOutLinearInEasing
+            )
+        )
+    )
+    val brush = Brush.linearGradient(
+        colors = gradient,
+        start = Offset(200f, 200f),
+        end = Offset(
+            x = translateAnimation.value,
+            y = translateAnimation.value
+        )
+    )
+
+    Row(
+        modifier = Modifier
+            .padding(vertical = 5.dp)
+            .fillMaxWidth()
+            .height(110.dp)
+            .clip(shape = MaterialTheme.shapes.medium),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        Spacer(
+            modifier = Modifier
+                .size(100.dp)
+                .clip(shape = MaterialTheme.shapes.medium)
+                .background(brush),
+        )
+        Spacer(modifier = Modifier.width(10.dp))
+        Spacer(
+            modifier = Modifier
+                .height(100.dp)
+                .weight(1f)
+                .background(brush),
+        )
+    }
+}
+

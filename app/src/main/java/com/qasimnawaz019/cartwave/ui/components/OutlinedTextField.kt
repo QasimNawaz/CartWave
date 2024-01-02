@@ -40,7 +40,7 @@ fun CartWaveOutlinedTextField(
     keyboardType: KeyboardType = KeyboardType.Text,
     imeAction: ImeAction = ImeAction.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
-    iconDrawable: Int?
+    iconDrawable: Int? = null
 ) {
     Column {
         OutlinedTextField(

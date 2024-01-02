@@ -16,19 +16,25 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -129,5 +135,59 @@ fun AlertMessageDialog(
 
         }
 
+    }
+}
+
+@Composable
+fun AddressDialog(onDismissRequest: () -> Unit, onAddAddress: (address: String) -> Unit) {
+    val address = remember {
+        mutableStateOf<String?>(null)
+    }
+    Dialog(onDismissRequest = onDismissRequest) {
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
+            shape = RoundedCornerShape(size = 12.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.secondaryContainer)
+                    .padding(all = 16.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = address.value ?: "",
+                    onValueChange = { address.value = it },
+                    label = { Text(text = "Address") },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+                        textColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+                        focusedLabelColor = MaterialTheme.colorScheme.primary,
+                        unfocusedLabelColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+                        cursorColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+                        trailingIconColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+                    )
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("AddressDialogConfirm"), onClick = {
+                        onAddAddress.invoke(address.value.toString())
+                    }, colors = ButtonDefaults.buttonColors(
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                        backgroundColor = MaterialTheme.colorScheme.primary,
+                        disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        disabledBackgroundColor = MaterialTheme.colorScheme.surfaceVariant
+                    ), enabled = !address.value.isNullOrBlank()
+                ) {
+                    Text(text = "Confirm")
+                }
+            }
+        }
     }
 }

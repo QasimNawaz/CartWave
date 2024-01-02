@@ -3,8 +3,11 @@ package com.qasimnawaz019.data.repository.dataSourceImpl
 import android.util.Log
 import com.qasimnawaz019.data.repository.dataSource.RemoteDataSource
 import com.qasimnawaz019.data.repository.datastore.DataStoreRepository
+import com.qasimnawaz019.data.utils.ADD_ADDRESS
 import com.qasimnawaz019.data.utils.ADD_TO_CART
 import com.qasimnawaz019.data.utils.ADD_TO_FAVOURITE
+import com.qasimnawaz019.data.utils.GET_ADDRESSES
+import com.qasimnawaz019.data.utils.GET_PRIMARY_ADDRESS
 import com.qasimnawaz019.data.utils.GET_PRODUCT
 import com.qasimnawaz019.data.utils.GET_USER_CART
 import com.qasimnawaz019.data.utils.LOGIN
@@ -13,11 +16,15 @@ import com.qasimnawaz019.data.utils.PRODUCTS_GROUP_BY_CATEGORY
 import com.qasimnawaz019.data.utils.REGISTER
 import com.qasimnawaz019.data.utils.REMOVE_FROM_CART
 import com.qasimnawaz019.data.utils.REMOVE_FROM_FAVOURITE
+import com.qasimnawaz019.data.utils.UPDATE_PRIMARY_ADDRESS
 import com.qasimnawaz019.data.utils.safeRequest
+import com.qasimnawaz019.domain.dto.address.AddAddressRequestDto
+import com.qasimnawaz019.domain.dto.address.UpdatePrimaryAddressRequestDto
 import com.qasimnawaz019.domain.dto.cart.AddToCartRequestDto
 import com.qasimnawaz019.domain.dto.favourite.AddToFavouriteRequestDto
 import com.qasimnawaz019.domain.dto.login.LoginRequestDto
 import com.qasimnawaz019.domain.dto.login.RegisterRequestDto
+import com.qasimnawaz019.domain.model.Address
 import com.qasimnawaz019.domain.model.BaseResponse
 import com.qasimnawaz019.domain.model.Product
 import com.qasimnawaz019.domain.model.ProductsByCategoryItem
@@ -163,6 +170,56 @@ class RemoteDataSourceImpl(
                     0
                 )
             )
+        }
+    }
+
+    override suspend fun addAddress(address: String): NetworkCall<BaseResponse<String>> {
+        return client.safeRequest(networkConnectivity) {
+            method = HttpMethod.Post
+            url(ADD_ADDRESS)
+            header("Authorization", "Bearer ${dataStoreRepository.readAccessToken().first()}")
+            contentType(ContentType.Application.Json)
+            setBody(
+                AddAddressRequestDto(
+                    dataStoreRepository.getUser().first()?.id ?: 0,
+                    address
+                )
+            )
+        }
+    }
+
+    override suspend fun updatePrimaryAddress(addressId: Int): NetworkCall<BaseResponse<String>> {
+        return client.safeRequest(networkConnectivity) {
+            method = HttpMethod.Post
+            url(UPDATE_PRIMARY_ADDRESS)
+            header("Authorization", "Bearer ${dataStoreRepository.readAccessToken().first()}")
+            contentType(ContentType.Application.Json)
+            setBody(
+                UpdatePrimaryAddressRequestDto(
+                    dataStoreRepository.getUser().first()?.id ?: 0,
+                    addressId
+                )
+            )
+        }
+    }
+
+    override suspend fun getPrimaryAddress(): NetworkCall<BaseResponse<Address>> {
+        return client.safeRequest(networkConnectivity) {
+            method = HttpMethod.Get
+            url(GET_PRIMARY_ADDRESS)
+            header("Authorization", "Bearer ${dataStoreRepository.readAccessToken().first()}")
+            parameter("userId", dataStoreRepository.getUser().first()?.id)
+            contentType(ContentType.Application.Json)
+        }
+    }
+
+    override suspend fun getAddresses(): NetworkCall<BaseResponse<List<Address>>> {
+        return client.safeRequest(networkConnectivity) {
+            method = HttpMethod.Get
+            url(GET_ADDRESSES)
+            header("Authorization", "Bearer ${dataStoreRepository.readAccessToken().first()}")
+            parameter("userId", dataStoreRepository.getUser().first()?.id)
+            contentType(ContentType.Application.Json)
         }
     }
 

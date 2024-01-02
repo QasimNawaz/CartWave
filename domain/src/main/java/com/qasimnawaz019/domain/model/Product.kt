@@ -21,7 +21,7 @@ data class Product(
     @SerializedName("discount")
     val discount: String?,
     @SerializedName("id")
-    val id: Int?,
+    val id: Int = -1,
     @SerializedName("images")
     val images: List<String> = emptyList(),
     @SerializedName("isFavourite")
