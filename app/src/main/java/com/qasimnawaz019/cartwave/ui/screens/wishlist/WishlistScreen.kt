@@ -48,32 +48,41 @@ fun WishlistScreen(
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
         favourites.apply {
-            when {
-                loadState.refresh is LoadState.Error -> {
-                    EmptyView(
-                        R.drawable.ic_network_error,
-                        (loadState.refresh as LoadState.Error).error.message
-                            ?: "Something went wrong"
-                    )
+            when (loadState.refresh) {
+                is LoadState.Loading -> {
+                    LazyVerticalGrid(state = rememberLazyGridState(),
+                        contentPadding = PaddingValues(vertical = 15.dp, horizontal = 10.dp),
+                        columns = GridCells.Fixed(2),
+                        content = {
+                            items(1) {
+                                VerticalGridProductsShimmer()
+                            }
+                        })
                 }
 
-                loadState.refresh != LoadState.Loading && itemCount == 0 -> {
-                    EmptyView(R.drawable.ic_empty_wish_list, "Your wishlist is empty")
+                is LoadState.Error -> {
+                    (loadState.refresh as LoadState.Error).error.message.let { error ->
+                        if (error == "No data found!") {
+                            EmptyView(R.drawable.ic_empty_wish_list, "Your wishlist is empty")
+                        } else {
+                            EmptyView(
+                                R.drawable.ic_network_error, error ?: "Something went wrong"
+                            )
+                        }
+                    }
+                }
+
+                else -> {
+                    FavouritesGrid(
+                        favourites = favourites, onNavigate = onNavigate
+                    ) {
+                        viewModel.removeFromFavourite(it)
+                    }
                 }
             }
-        }
-
-//        if (favourites.itemCount == 0 && favourites.loadState.refresh != LoadState.Loading) {
-//            EmptyView(R.drawable.ic_empty_wish_list, "Your wishlist is empty")
-//        }
-        FavouritesGrid(
-            favourites = favourites, onNavigate = onNavigate
-        ) {
-            viewModel.removeFromFavourite(it)
         }
     }
 
@@ -93,14 +102,9 @@ fun FavouritesGrid(
                 favourites[index]?.let { product ->
                     ProductRowItem(product = product, onNavigate = onNavigate, onUpdateFavourite = {
                         if (!it) {
-                            product.id?.let { _id -> onRemoveFavourite.invoke(_id) }
+                            onRemoveFavourite.invoke(product.id)
                         }
                     })
-                }
-            }
-            if (favourites.loadState.refresh == LoadState.Loading) {
-                items(2) {
-                    VerticalGridProductsShimmer()
                 }
             }
         })
