@@ -30,6 +30,7 @@ class CartScreenViewModel(
 
     private fun getUserCart() {
         viewModelScope.launch {
+            _networkUiState.emit(NetworkUiState.Loading)
             getUserCartUseCase.execute(Unit).collect { networkCall ->
                 when (networkCall) {
                     is NetworkCall.Error.NoNetwork -> {

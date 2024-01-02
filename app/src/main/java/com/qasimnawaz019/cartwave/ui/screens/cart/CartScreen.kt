@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.gson.Gson
 import com.qasimnawaz019.cartwave.R
+import com.qasimnawaz019.cartwave.ui.components.CartItemShimmer
 import com.qasimnawaz019.cartwave.ui.components.EmptyView
 import com.qasimnawaz019.cartwave.ui.screens.graphs.MainScreenInfo
 import com.qasimnawaz019.cartwave.utils.DashedDivider
@@ -218,8 +219,15 @@ fun CartScreen(
         LazyColumn(
             state = lazyListState, modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 120.dp)
+                .padding(start = 10.dp, end = 10.dp, bottom = 120.dp)
         ) {
+            if (loading.value) {
+                repeat(3) {
+                    item {
+                        CartItemShimmer()
+                    }
+                }
+            }
             itemsIndexed(items = products) { index, product ->
                 key(product.id) {
                     CartItem(product, onCartQtyUpdate = { cartQty ->

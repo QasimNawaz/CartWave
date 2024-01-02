@@ -41,7 +41,7 @@ fun CartItem(product: Product, onCartQtyUpdate: (cartQty: Int) -> Unit) {
     CartWaveSurface(
         color = MaterialTheme.colorScheme.surfaceVariant,
         modifier = Modifier
-            .padding(horizontal = 10.dp, vertical = 5.dp)
+            .padding(vertical = 5.dp)
             .fillMaxWidth()
             .height(110.dp)
             .clip(shape = MaterialTheme.shapes.medium),
