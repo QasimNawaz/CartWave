@@ -209,7 +209,11 @@ fun CartScreen(
                 }
             }
         }) {
-        if (!loading.value && !error.value.isNullOrBlank()) {
+        if (!loading.value && !error.value.isNullOrBlank() && error.value.equals("No data found!")) {
+            EmptyView(
+                drawable = R.drawable.ic_empty_cart, text = "Your cart is empty"
+            )
+        } else if (!loading.value && !error.value.isNullOrBlank()) {
             EmptyView(
                 drawable = R.drawable.ic_network_error, text = error.value ?: "Something went wrong"
             )

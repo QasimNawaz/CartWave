@@ -16,6 +16,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,21 +35,18 @@ import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.qasimnawaz019.cartwave.R
-import com.qasimnawaz019.cartwave.ui.components.CartWaveSurface
 import com.qasimnawaz019.domain.model.Product
 
 @Composable
 fun CartItem(product: Product, onCartQtyUpdate: (cartQty: Int) -> Unit) {
-    CartWaveSurface(
-        color = MaterialTheme.colorScheme.surfaceVariant,
+    Card(
         modifier = Modifier
             .padding(vertical = 5.dp)
             .fillMaxWidth()
-            .height(110.dp)
-            .clip(shape = MaterialTheme.shapes.medium),
-        elevation = 2.dp,
+            .height(110.dp),
+        shape = MaterialTheme.shapes.medium,
+        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
     ) {
-
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxSize()
