@@ -211,10 +211,11 @@ fun CheckOutScreen(
                         textAlign = TextAlign.Center
                     )
                 }
-                Button(modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .padding(bottom = 12.dp),
+                Button(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .padding(bottom = 12.dp),
                     onClick = {
                         scope.launch { sheetState.hide() }.invokeOnCompletion {
                             if (!sheetState.isVisible) {
@@ -222,7 +223,14 @@ fun CheckOutScreen(
                                 navController.popBackStack()
                             }
                         }
-                    }) {
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                        backgroundColor = MaterialTheme.colorScheme.primary,
+                        disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        disabledBackgroundColor = MaterialTheme.colorScheme.surfaceVariant
+                    )
+                ) {
                     Text("Continue Shopping")
                 }
             }
@@ -364,7 +372,7 @@ fun CheckOutScreen(
                                 OrderProduct(
                                     productId = it.id,
                                     title = it.title ?: "",
-                                    price = it.sellingPrice?.toInt() ?: 0,
+                                    price = it.sellingPrice?.replace(",", "")?.toIntOrNull() ?: 0,
                                     quantity = it.cartQty
                                 )
                             })

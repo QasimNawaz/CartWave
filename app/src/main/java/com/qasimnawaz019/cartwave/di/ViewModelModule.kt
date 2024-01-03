@@ -21,7 +21,7 @@ val viewModelModule = module {
     viewModel { OnBoardingViewModel(get()) }
     viewModel { LoginScreenViewModel(get(), get()) }
     viewModel { RegisterScreenViewModel(get(), get()) }
-    viewModel { SplashScreenViewModel(get(), get(), get()) }
+    viewModel { SplashScreenViewModel(get(), get()) }
     viewModel { HomeScreenViewModel(get(), get(), get(), get(), get()) }
     viewModel { ProductDetailViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { WishlistScreenViewModel(get(), get()) }
