@@ -3,11 +3,13 @@ package com.qasimnawaz019.data.di
 import com.qasimnawaz019.data.repository.repoImpl.AddressRepoImpl
 import com.qasimnawaz019.data.repository.repoImpl.AuthRepoImpl
 import com.qasimnawaz019.data.repository.repoImpl.FavouriteProductsRepoImpl
+import com.qasimnawaz019.data.repository.repoImpl.OrderRepoImpl
 import com.qasimnawaz019.data.repository.repoImpl.ProductsRepoImpl
 import com.qasimnawaz019.data.repository.repoImpl.UserCartRepoImpl
 import com.qasimnawaz019.domain.repository.AddressRepo
 import com.qasimnawaz019.domain.repository.AuthRepo
 import com.qasimnawaz019.domain.repository.FavouriteProductsRepo
+import com.qasimnawaz019.domain.repository.OrderRepo
 import com.qasimnawaz019.domain.repository.ProductsRepo
 import com.qasimnawaz019.domain.repository.UserCartRepo
 import org.koin.dsl.module
@@ -24,4 +26,5 @@ val repositoryModule = module {
     single<FavouriteProductsRepo> { FavouriteProductsRepoImpl(get(), get(), get()) }
     single<UserCartRepo> { UserCartRepoImpl(get(), get()) }
     single<AddressRepo> { AddressRepoImpl(get(), get()) }
+    single<OrderRepo> { OrderRepoImpl(get(), get()) }
 }

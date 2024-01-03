@@ -24,12 +24,13 @@ class CartScreenViewModel(
     private val _subTotal = MutableStateFlow<Int>(0)
     val subTotal: StateFlow<Int> = _subTotal.asStateFlow()
 
-    init {
-        getUserCart()
-    }
+//    init {
+//        getUserCart()
+//    }
 
-    private fun getUserCart() {
+    fun getUserCart() {
         viewModelScope.launch {
+            _subTotal.emit(0)
             _networkUiState.emit(NetworkUiState.Loading)
             getUserCartUseCase.execute(Unit).collect { networkCall ->
                 when (networkCall) {

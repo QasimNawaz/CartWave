@@ -40,9 +40,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.qasimnawaz019.cartwave.R
 import com.qasimnawaz019.cartwave.ui.components.AddressShimmer
+import com.qasimnawaz019.cartwave.ui.components.AlertMessageDialog
 import com.qasimnawaz019.cartwave.ui.components.CartItemShimmer
 import com.qasimnawaz019.cartwave.ui.components.CartWaveScaffold
+import com.qasimnawaz019.cartwave.ui.components.LoadingDialog
 import com.qasimnawaz019.cartwave.utils.rememberLifecycleEvent
+import com.qasimnawaz019.domain.dto.order.OrderProduct
+import com.qasimnawaz019.domain.dto.order.PlaceOrderRequestDto
 import com.qasimnawaz019.domain.model.Address
 import com.qasimnawaz019.domain.model.Product
 import com.qasimnawaz019.domain.utils.NetworkUiState
@@ -69,23 +73,30 @@ fun CheckOutScreen(
     val listLoading = remember {
         mutableStateOf(false)
     }
+    val listError = remember {
+        mutableStateOf<String?>(null)
+    }
     val addressLoading = remember {
         mutableStateOf(false)
-    }
-    val error = remember {
-        mutableStateOf<String?>(null)
     }
     val addressError = remember {
         mutableStateOf<String?>(null)
     }
+    val orderLoading = remember {
+        mutableStateOf(false)
+    }
+    val orderError = remember {
+        mutableStateOf<String?>(null)
+    }
     val sheetState =
         rememberModalBottomSheetState(skipPartiallyExpanded = true, confirmValueChange = { false })
-    var showBottomSheet by remember { mutableStateOf(false) }
+    var orderPlacedBottomSheet by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
     val cartsResponse: NetworkUiState<List<Product>> by viewModel.userCartUiState.collectAsStateWithLifecycle()
     val primaryAddressResponse: NetworkUiState<Address> by viewModel.networkUiState.collectAsStateWithLifecycle()
     val totalAmount: Int by viewModel.totalAmount.collectAsStateWithLifecycle()
+    val orderResponse: NetworkUiState<String> by viewModel.placeUiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(lifecycleEvent) {
         if (lifecycleEvent == Lifecycle.Event.ON_RESUME) {
@@ -104,7 +115,7 @@ fun CheckOutScreen(
             is NetworkUiState.Error -> {
                 listLoading.value = false
                 (cartsResponse as NetworkUiState.Error).error.let {
-                    error.value = it
+                    listError.value = it
                 }
             }
 
@@ -144,22 +155,111 @@ fun CheckOutScreen(
         }
     }
 
-    if (showBottomSheet) {
-        ModalBottomSheet(onDismissRequest = {
-            showBottomSheet = false
-        }, dragHandle = {
+    LaunchedEffect(orderResponse) {
+        when (orderResponse) {
+            is NetworkUiState.Loading -> {
+                orderLoading.value = true
+            }
 
-        }, sheetState = sheetState) {
-            Button(onClick = {
-                scope.launch { sheetState.hide() }.invokeOnCompletion {
-                    if (!sheetState.isVisible) {
-                        showBottomSheet = false
-                    }
+            is NetworkUiState.Error -> {
+                orderLoading.value = false
+                (orderResponse as NetworkUiState.Error).error.let {
+                    orderError.value = it
                 }
-            }) {
-                Text("Hide bottom sheet")
+            }
+
+            is NetworkUiState.Success -> {
+                orderLoading.value = false
+                orderPlacedBottomSheet = true
+            }
+
+            else -> {}
+        }
+    }
+
+    if (orderPlacedBottomSheet) {
+        ModalBottomSheet(onDismissRequest = {
+            orderPlacedBottomSheet = false
+        }, sheetState = sheetState) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(500.dp)
+                    .padding(horizontal = 12.dp)
+            ) {
+                Column(
+                    modifier = Modifier.align(Alignment.Center),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Order Placed",
+                        fontSize = MaterialTheme.typography.headlineSmall.fontSize,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        textAlign = TextAlign.Center
+                    )
+                    Image(
+                        modifier = Modifier.size(200.dp),
+                        painter = painterResource(id = R.drawable.ic_success),
+                        contentDescription = null,
+                    )
+                    Text(
+                        text = "Your order has been confirmed, we will send you confirmation email shortly.",
+                        fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                        fontWeight = FontWeight.Light,
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+                        textAlign = TextAlign.Center
+                    )
+                }
+                Button(modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp),
+                    onClick = {
+                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+                            if (!sheetState.isVisible) {
+                                orderPlacedBottomSheet = false
+                                navController.popBackStack()
+                            }
+                        }
+                    }) {
+                    Text("Continue Shopping")
+                }
             }
         }
+    }
+
+    if (orderLoading.value) {
+        LoadingDialog()
+    }
+    if (orderError.value != null) {
+        AlertMessageDialog(title = "Something went wrong !",
+            message = orderError.value,
+            drawable = R.drawable.ic_error_dialog,
+            positiveButtonText = "Retry",
+            negativeButtonText = "Cancel",
+            onPositiveClick = {
+                viewModel.placeOrder(
+                    PlaceOrderRequestDto(userId = 0,
+                        orderDate = "${System.currentTimeMillis()}",
+                        shippingAddress = primaryAddress?.value?.address ?: "",
+                        orderStatus = "Placed",
+                        promoCode = "",
+                        totalAmount = totalAmount,
+                        paymentMethod = "",
+                        products = products.map {
+                            OrderProduct(
+                                productId = it.id,
+                                title = it.title ?: "",
+                                price = it.sellingPrice?.toInt() ?: 0,
+                                quantity = it.cartQty
+                            )
+                        })
+                )
+            },
+            onNegativeClick = {
+
+            })
     }
     CartWaveScaffold(modifier = Modifier.fillMaxSize(), topBar = {
         Box(
@@ -250,9 +350,25 @@ fun CheckOutScreen(
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .testTag("Proceed to Checkout"),
+                    .testTag("Place Order"),
                 onClick = {
-                    showBottomSheet = true
+                    viewModel.placeOrder(
+                        PlaceOrderRequestDto(userId = 0,
+                            orderDate = "${System.currentTimeMillis()}",
+                            shippingAddress = primaryAddress?.value?.address ?: "",
+                            orderStatus = "Placed",
+                            promoCode = "",
+                            totalAmount = totalAmount,
+                            paymentMethod = "",
+                            products = products.map {
+                                OrderProduct(
+                                    productId = it.id,
+                                    title = it.title ?: "",
+                                    price = it.sellingPrice?.toInt() ?: 0,
+                                    quantity = it.cartQty
+                                )
+                            })
+                    )
                 },
                 colors = ButtonDefaults.buttonColors(
                     contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -261,9 +377,10 @@ fun CheckOutScreen(
                     disabledBackgroundColor = MaterialTheme.colorScheme.surfaceVariant
                 ),
             ) {
-                Text(text = "Checkout Now")
+                Text(text = "Place Order")
             }
         }
 
     }
+
 }

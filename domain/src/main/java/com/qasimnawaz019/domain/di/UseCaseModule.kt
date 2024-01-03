@@ -12,6 +12,7 @@ import com.qasimnawaz019.domain.usecase.cart.RemoveFromCartUseCase
 import com.qasimnawaz019.domain.usecase.favourite.AddToFavouriteUseCase
 import com.qasimnawaz019.domain.usecase.favourite.FavouritesPagingUseCase
 import com.qasimnawaz019.domain.usecase.favourite.RemoveFromFavouriteUseCase
+import com.qasimnawaz019.domain.usecase.order.PlaceOrderUseCase
 import com.qasimnawaz019.domain.usecase.product.ProductDetailUseCase
 import com.qasimnawaz019.domain.usecase.product.ProductsByCategoryUseCase
 import com.qasimnawaz019.domain.usecase.product.ProductsGroupBySubCategoryUseCase
@@ -33,4 +34,5 @@ val useCaseModule = module {
     single { UpdatePrimaryAddressUseCase(get(), get()) }
     single { GetAddressesUseCase(get(), get()) }
     single { GetPrimaryAddressUseCase(get(), get()) }
+    single { PlaceOrderUseCase(get(), get()) }
 }

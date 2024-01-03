@@ -11,6 +11,7 @@ import com.qasimnawaz019.data.utils.GET_PRIMARY_ADDRESS
 import com.qasimnawaz019.data.utils.GET_PRODUCT
 import com.qasimnawaz019.data.utils.GET_USER_CART
 import com.qasimnawaz019.data.utils.LOGIN
+import com.qasimnawaz019.data.utils.PLACE_ORDER
 import com.qasimnawaz019.data.utils.PRODUCTS_BY_CATEGORY
 import com.qasimnawaz019.data.utils.PRODUCTS_GROUP_BY_CATEGORY
 import com.qasimnawaz019.data.utils.REGISTER
@@ -24,6 +25,7 @@ import com.qasimnawaz019.domain.dto.cart.AddToCartRequestDto
 import com.qasimnawaz019.domain.dto.favourite.AddToFavouriteRequestDto
 import com.qasimnawaz019.domain.dto.login.LoginRequestDto
 import com.qasimnawaz019.domain.dto.login.RegisterRequestDto
+import com.qasimnawaz019.domain.dto.order.PlaceOrderRequestDto
 import com.qasimnawaz019.domain.model.Address
 import com.qasimnawaz019.domain.model.BaseResponse
 import com.qasimnawaz019.domain.model.Product
@@ -220,6 +222,18 @@ class RemoteDataSourceImpl(
             header("Authorization", "Bearer ${dataStoreRepository.readAccessToken().first()}")
             parameter("userId", dataStoreRepository.getUser().first()?.id)
             contentType(ContentType.Application.Json)
+        }
+    }
+
+    override suspend fun placeOrder(placeOrderRequestDto: PlaceOrderRequestDto): NetworkCall<BaseResponse<String>> {
+        return client.safeRequest(networkConnectivity) {
+            method = HttpMethod.Post
+            url(PLACE_ORDER)
+            header("Authorization", "Bearer ${dataStoreRepository.readAccessToken().first()}")
+            contentType(ContentType.Application.Json)
+            setBody(
+                placeOrderRequestDto.copy(userId = dataStoreRepository.getUser().first()?.id ?: 0)
+            )
         }
     }
 

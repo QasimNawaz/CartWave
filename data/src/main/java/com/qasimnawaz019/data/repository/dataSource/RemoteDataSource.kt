@@ -2,6 +2,7 @@ package com.qasimnawaz019.data.repository.dataSource
 
 import com.qasimnawaz019.domain.dto.login.LoginRequestDto
 import com.qasimnawaz019.domain.dto.login.RegisterRequestDto
+import com.qasimnawaz019.domain.dto.order.PlaceOrderRequestDto
 import com.qasimnawaz019.domain.model.Address
 import com.qasimnawaz019.domain.model.BaseResponse
 import com.qasimnawaz019.domain.model.Product
@@ -36,4 +37,6 @@ interface RemoteDataSource {
     suspend fun getPrimaryAddress(): NetworkCall<BaseResponse<Address>>
 
     suspend fun getAddresses(): NetworkCall<BaseResponse<List<Address>>>
+
+    suspend fun placeOrder(placeOrderRequestDto: PlaceOrderRequestDto): NetworkCall<BaseResponse<String>>
 }

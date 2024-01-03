@@ -18,6 +18,7 @@ const val ADD_ADDRESS = "${BuildConfig.BASE_URL}address/addAddress"
 const val UPDATE_PRIMARY_ADDRESS = "${BuildConfig.BASE_URL}address/updatePrimaryAddress"
 const val GET_PRIMARY_ADDRESS = "${BuildConfig.BASE_URL}address/getPrimaryAddress"
 const val GET_ADDRESSES = "${BuildConfig.BASE_URL}address/getAddress"
+const val PLACE_ORDER = "${BuildConfig.BASE_URL}order/placeOrder"
 
 const val FAVOURITE_PRODUCT_TABLE = "FAVOURITE_PRODUCT_TABLE"
 const val MY_CART_TABLE = "MY_CART_TABLE"

@@ -2,10 +2,12 @@ package com.qasimnawaz019.cartwave.ui.screens.checkout
 
 import androidx.lifecycle.viewModelScope
 import com.qasimnawaz019.cartwave.base.BaseViewModel
+import com.qasimnawaz019.domain.dto.order.PlaceOrderRequestDto
 import com.qasimnawaz019.domain.model.Address
 import com.qasimnawaz019.domain.model.Product
 import com.qasimnawaz019.domain.usecase.address.GetPrimaryAddressUseCase
 import com.qasimnawaz019.domain.usecase.cart.GetUserCartUseCase
+import com.qasimnawaz019.domain.usecase.order.PlaceOrderUseCase
 import com.qasimnawaz019.domain.utils.NetworkCall
 import com.qasimnawaz019.domain.utils.NetworkUiState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +17,8 @@ import kotlinx.coroutines.launch
 
 class CheckOutScreenViewModel(
     private val getUserCartUseCase: GetUserCartUseCase,
-    private val getPrimaryAddressUseCase: GetPrimaryAddressUseCase
+    private val getPrimaryAddressUseCase: GetPrimaryAddressUseCase,
+    private val placeOrderUseCase: PlaceOrderUseCase
 ) : BaseViewModel<Address>() {
 
     private val _totalAmount = MutableStateFlow<Int>(0)
@@ -24,6 +27,9 @@ class CheckOutScreenViewModel(
     private val _userCartUiState =
         MutableStateFlow<NetworkUiState<List<Product>>>(NetworkUiState.Empty)
     val userCartUiState: StateFlow<NetworkUiState<List<Product>>> = _userCartUiState.asStateFlow()
+
+    private val _placeUiState = MutableStateFlow<NetworkUiState<String>>(NetworkUiState.Empty)
+    val placeUiState: StateFlow<NetworkUiState<String>> = _placeUiState.asStateFlow()
 
     init {
         getUserCart()
@@ -79,8 +85,17 @@ class CheckOutScreenViewModel(
                             _userCartUiState.emit(NetworkUiState.Error(error = networkCall.data.message))
                         }
                     }
+
+                    else -> {}
                 }
             }
+        }
+    }
+
+    fun placeOrder(dto: PlaceOrderRequestDto) {
+        viewModelScope.launch {
+            _placeUiState.emit(NetworkUiState.Loading)
+            placeOrderUseCase.execute(PlaceOrderUseCase.Params(dto)).asUiState(_placeUiState)
         }
     }
 }

@@ -37,6 +37,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.gson.Gson
 import com.qasimnawaz019.cartwave.R
@@ -44,6 +45,7 @@ import com.qasimnawaz019.cartwave.ui.components.CartItemShimmer
 import com.qasimnawaz019.cartwave.ui.components.EmptyView
 import com.qasimnawaz019.cartwave.ui.screens.graphs.MainScreenInfo
 import com.qasimnawaz019.cartwave.utils.DashedDivider
+import com.qasimnawaz019.cartwave.utils.rememberLifecycleEvent
 import com.qasimnawaz019.domain.model.Product
 import com.qasimnawaz019.domain.utils.NetworkUiState
 import org.koin.androidx.compose.getViewModel
@@ -54,6 +56,7 @@ fun CartScreen(
     onNavigate: (route: String) -> Unit, viewModel: CartScreenViewModel = getViewModel()
 ) {
 
+    val lifecycleEvent = rememberLifecycleEvent()
     val lazyListState = rememberLazyListState()
 
     val products = remember {
@@ -67,6 +70,10 @@ fun CartScreen(
     val error = remember {
         mutableStateOf<String?>(null)
     }
+
+    val scaffoldState = rememberBottomSheetScaffoldState(
+//        bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
+    )
 
     val cartsResponse: NetworkUiState<List<Product>> by viewModel.networkUiState.collectAsStateWithLifecycle()
     val subTotal: Int by viewModel.subTotal.collectAsStateWithLifecycle()
@@ -97,9 +104,12 @@ fun CartScreen(
         }
     }
 
-    val scaffoldState = rememberBottomSheetScaffoldState(
-//        bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
-    )
+    LaunchedEffect(lifecycleEvent) {
+        if (lifecycleEvent == Lifecycle.Event.ON_RESUME) {
+            products.clear()
+            viewModel.getUserCart()
+        }
+    }
 
     BottomSheetScaffold(backgroundColor = MaterialTheme.colorScheme.background,
         scaffoldState = scaffoldState,

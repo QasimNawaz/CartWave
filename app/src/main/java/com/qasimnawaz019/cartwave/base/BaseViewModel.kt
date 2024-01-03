@@ -63,6 +63,55 @@ open class BaseViewModel<T> : ViewModel() {
                         _networkUiState.emit(NetworkUiState.Error(error = it.data.message))
                     }
                 }
+
+                else -> {}
+            }
+        }
+    }
+
+    suspend fun <U> Flow<NetworkCall<BaseResponse<U>>>.asUiState(_uiState: MutableStateFlow<NetworkUiState<U>>) {
+        this.collect {
+            when (it) {
+                is NetworkCall.Error.NoNetwork -> {
+                    Log.d("asUiState", "ApiResponse.Error.NoNetwork Emit")
+                    _uiState.emit(
+                        NetworkUiState.Error(
+                            code = 12029,
+                            error = "${it.cause.message}"
+                        )
+                    )
+                }
+
+                is NetworkCall.Error.HttpError -> {
+                    Log.d("asUiState", "ApiResponse.Error.HttpError Emit")
+                    _uiState.emit(
+                        NetworkUiState.Error(
+                            code = it.code,
+                            error = "${it.message}"
+                        )
+                    )
+                }
+
+                is NetworkCall.Error.SerializationError -> {
+                    Log.d("asUiState", "ApiResponse.Error.SerializationError Emit")
+                    _uiState.emit(NetworkUiState.Error(error = "${it.message}"))
+                }
+
+                is NetworkCall.Error.GenericError -> {
+                    Log.d("asUiState", "ApiResponse.Error.GenericError Emit")
+                    _uiState.emit(NetworkUiState.Error(error = "${it.message}"))
+                }
+
+                is NetworkCall.Success -> {
+                    Log.d("asUiState", "ApiResponse.Success Emit")
+                    if (it.data.success && it.data.data != null) {
+                        _uiState.emit(NetworkUiState.Success(it.data.data!!))
+                    } else {
+                        _uiState.emit(NetworkUiState.Error(error = it.data.message))
+                    }
+                }
+
+                else -> {}
             }
         }
     }
